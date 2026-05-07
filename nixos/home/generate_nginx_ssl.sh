@@ -40,4 +40,8 @@ DOMAINS+=(
     "status.home"
 )
 
-mkcert -cert-file home.pem -key-file home.key.pem "${DOMAINS[@]}"
+mkcert -cert-file home/secrets/home.pem -key-file home/secrets/home-key.pem "${DOMAINS[@]}"
+sops -e home/secrets/home.pem > home/secrets/home.pem.asc && rm home/secrets/home.pem
+sops -e home/secrets/home-key.pem > home/secrets/home-key.pem.asc && rm home/secrets/home-key.pem
+
+# 在 dotfiles/nixos 目录下执行 ./home/generate_nginx_ssl.sh

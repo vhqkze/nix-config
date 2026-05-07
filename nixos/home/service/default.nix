@@ -9,5 +9,6 @@
     ./gatus.nix
     ./webdav.nix
     ./tailscale.nix
+    ./fail2ban.nix
   ];
 }

@@ -122,6 +122,18 @@
     '';
   };
 
+  # security.pki.certificateFiles = [
+  #   这两个都不对，会报错找不到文件
+  #   config.sops.secrets."mkcert/rootCA.pem".path
+  #   "/run/secrets/mkcert/rootCA.pem"
+  # ];
+
+  system.activationScripts.myCustomTask = {
+    text = ''
+      mkdir -p /var/lib/mkcert
+    '';
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -134,7 +146,6 @@
     atuin
     age
     sops
-    neovim
     git
     delta
     wget
@@ -147,6 +158,7 @@
     kitty
     systemctl-tui
     mkcert
+    tree-sitter
 
     htop
     btop
@@ -166,6 +178,7 @@
     inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.lazygit
     inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.yazi
     inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.tmux
+    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.neovim
   ];
 
   fonts.fontDir.enable = true;
@@ -190,11 +203,6 @@
     secrets = {
       "webdav" = { };
       "nginx/reader".owner = "nginx";
-      "nginx/ssl_cert".owner = "nginx";
-      "nginx/ssl_key" = {
-        owner = "nginx";
-        reloadUnits = [ "nginx.service" ];
-      };
       "docker/grimmory" = { };
       "docker/grimmory_db" = { };
       "docker/booklore" = { };
@@ -206,15 +214,30 @@
       "service/bark_xz" = { };
       "service/weather" = { };
       "service/healthcheckio" = { };
-      "mkcert/public_key" = {
+      "mkcert/rootCA.pem" = {
+        format = "binary";
+        sopsFile = ./secrets/mkcert-ca.pem.asc;
         owner = "vhqkze";
         mode = "0644";
-        path = "${config.users.users.vhqkze.home}/.local/share/mkcert/rootCA.pem";
+        path = "/var/lib/mkcert/rootCA.pem";
       };
-      "mkcert/private_key" = {
+      "mkcert/rootCA-key.pem" = {
+        format = "binary";
+        sopsFile = ./secrets/mkcert-key.pem.asc;
         owner = "vhqkze";
         mode = "0400";
-        path = "${config.users.users.vhqkze.home}/.local/share/mkcert/rootCA-key.pem";
+        path = "/var/lib/mkcert/rootCA-key.pem";
+      };
+      "nginx/home.pem" = {
+        format = "binary";
+        sopsFile = ./secrets/home.pem.asc;
+        owner = "nginx";
+      };
+      "nginx/home-key.pem" = {
+        format = "binary";
+        sopsFile = ./secrets/home-key.pem.asc;
+        owner = "nginx";
+        reloadUnits = [ "nginx.service" ];
       };
     };
   };
@@ -223,6 +246,7 @@
     EDITOR = "nvim";
     VISUAL = "nvim";
     ZDOTDIR = "$HOME/.config/zsh";
+    CAROOT = "/var/lib/mkcert";
   };
   nix.settings.experimental-features = [
     "nix-command"
@@ -317,6 +341,7 @@
     80
     443
     3306
+    32400 # 要开启，要不然即使在局域网内，plex 也无法播放
   ];
   # networking.firewall.interfaces."lo".allowedTCPPorts = [ 3306 ];
   # networking.firewall.allowedUDPPorts = [  ];

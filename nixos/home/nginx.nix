@@ -7,14 +7,15 @@
     enable = true;
     recommendedProxySettings = true;
     recommendedGzipSettings = true;
+    clientMaxBodySize = "100m";
   };
   services.nginx.virtualHosts =
     let
       base = locations: {
         inherit locations;
         addSSL = true;
-        sslCertificate = config.sops.secrets."nginx/ssl_cert".path;
-        sslCertificateKey = config.sops.secrets."nginx/ssl_key".path;
+        sslCertificate = config.sops.secrets."nginx/home.pem".path;
+        sslCertificateKey = config.sops.secrets."nginx/home-key.pem".path;
 
         # forceSSL = true;
       };
@@ -40,7 +41,6 @@
       "actual.home" = proxy 5006;
       "beszel.home" = proxy 8090;
       "book.home" = proxyWithWs 6060;
-      "booklore.home" = proxyWithWs 6061;
       "calibre.home" = proxy 8083;
       "dev.home" = proxy 6610;
       "dockge.home" = proxy 5001;
@@ -86,8 +86,8 @@
           '';
         };
         addSSL = true;
-        sslCertificate = config.sops.secrets."nginx/ssl_cert".path;
-        sslCertificateKey = config.sops.secrets."nginx/ssl_key".path;
+        sslCertificate = config.sops.secrets."nginx/home.pem".path;
+        sslCertificateKey = config.sops.secrets."nginx/home-key.pem".path;
       };
     };
 }

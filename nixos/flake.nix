@@ -44,12 +44,14 @@
             home-manager.backupFileExtension = "backup";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # home-manager.users.orange = import "${config.users.users.home}/.config/nix/home.nix";
             home-manager.users.vhqkze = {
               imports = [
                 inputs.vicinae.homeManagerModules.default
                 ./home/vhqkze.nix
               ];
             };
+            # home-manager.users.orange = import (builtins.getEnv "HOME" + "/.config/nix/home.nix");
             home-manager.extraSpecialArgs = {
               inherit
                 zen-browser
