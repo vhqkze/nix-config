@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
 
@@ -52,16 +52,22 @@
   };
 
   # 配置防火墙
-  networking.firewall = {
-    enable = true;
-    # 允许 DHCP 和 DNS 流量
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = lib.mkForce [ ];
+  networking.firewall.allowedUDPPorts = lib.mkForce [ ];
+  networking.firewall.interfaces."enu1" = {
+    allowedTCPPorts = [
+      22 # ssh
+      53 # dns
+      67
+      68
+      80
+      3000 # adguardhome
+    ];
     allowedUDPPorts = [
       53
       67
-      68
     ];
-    allowedTCPPorts = [ 53 ]; # DNS 通常也需要 TCP 53
-    trustedInterfaces = [ "enu1" ];
   };
 
   # SmartDNS 服务配置
@@ -95,12 +101,14 @@
   # 然后 AdGuard Home 将 DNS 请求转发给 SmartDNS (10.8.8.8:5300)
   services.adguardhome = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
+
     settings = {
       dns = {
-        bind_hosts = [ "10.8.8.8" "127.0.0.1" ];
-        # bind_hosts = [ "0.0.0.0" ];
-        # bind_hosts = [ "127.0.0.1" ];
+        bind_hosts = [
+          "10.8.8.8"
+          "127.0.0.1"
+        ];
         port = 53;
         # 配置上游为 SmartDNS
         upstream_dns = [

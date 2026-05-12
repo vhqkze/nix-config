@@ -159,19 +159,18 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    openFirewall = false;
+    settings = {
+      # 允许 root 登录，但【仅限密钥】，禁止密码
+      PermitRootLogin = "prohibit-password";
+      PasswordAuthentication = false;
+    };
+  };
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPrcm51SikiK/ynIp6hFFvNXwCKvngpocvO0v0MAoxw/"
   ];
-
-  # Open ports in the firewall.
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
