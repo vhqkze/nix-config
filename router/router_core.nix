@@ -16,6 +16,19 @@
     "net.ipv4.tcp_congestion_control" = "bbr";
   };
 
+  networking.timeServers = [
+    # 需要配置为 ip，否则断电重启后 mihomo 无法使用导致时间无法同步
+    # mihomo也要配置 `- DST-PORT,123,DIRECT`
+    "203.107.6.88" # 阿里云公共 NTP 核心
+    "182.92.12.11" # 阿里云公共 NTP 备用
+    "139.199.215.251" # 腾讯云公共 NTP
+    "162.159.200.1" # Cloudflare全球授时
+  ];
+  services.timesyncd.extraConfig = ''
+    PollIntervalMinSec=16
+    PollIntervalMaxSec=32
+  '';
+
   networking.useDHCP = false; # 全局禁用 useDHCP，因为我们将在 networkd 中手动配置
   networking.useNetworkd = true;
   services.resolved.enable = false;
@@ -76,6 +89,7 @@
       3000 # adguardhome
       7890
       9090
+      45876 # beszel agent
     ];
     allowedUDPPorts = [
       53 # dns

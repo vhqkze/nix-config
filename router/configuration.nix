@@ -106,10 +106,11 @@
   environment.systemPackages = with pkgs; [
     unstable.neovim
     unstable.yazi
+    unstable.atuin
+    unstable.lnav
 
-    nixfmt-rfc-style
+    nixfmt
 
-    atuin
     bat
     eza
     fd
@@ -169,8 +170,20 @@
     };
   };
   users.users.root.openssh.authorizedKeys.keys = [
+    # mbp
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPrcm51SikiK/ynIp6hFFvNXwCKvngpocvO0v0MAoxw/"
+    # home
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEMN/Hmy+xs11ejPDZDvQVTjBTCAPPpoOC2M7wIabhtx"
   ];
+
+  services.beszel.agent = {
+    enable = true;
+    environment = {
+      LISTEN = "45876";
+    };
+    # 事先创建 /var/lib/secrets 目录，文件权限600，内容包含 KEY 和 TOKEN 两个环境变量
+    environmentFile = "/var/lib/secrets/beszel-agent.env";
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
