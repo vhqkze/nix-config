@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
 
@@ -27,10 +32,10 @@
       # 如果光猫改了桥接，则在此处配置拨号，当前按你要求直接连光猫
       dhcpV4Config.RouteMetric = 10;
     };
-    # LAN 口 (enu1) - 静态 IP 10.8.8.8
+    # LAN 口 (enu1) - 静态 IP 10.1.1.1
     networks."20-lan" = {
       matchConfig.Name = "enu1";
-      address = [ "10.8.8.8/24" ];
+      address = [ "10.1.1.1/24" ];
       networkConfig = {
         IPv4Forwarding = "yes";
         DHCPServer = "yes";
@@ -39,8 +44,15 @@
         PoolOffset = 10;
         PoolSize = 200;
         EmitDNS = "yes";
-        DNS = [ "10.8.8.8" ]; # 让客户端使用路由器作为 DNS
+        DNS = [ "10.1.1.1" ]; # 让客户端使用路由器作为 DNS，这里不能写 127.0.0.1
       };
+      dhcpServerStaticLeases = [
+        # 这里不要对 Mac 等开启了 私有Wi-Fi地址 的设备配置静态ip，要不然会获取不到ip
+        {
+          MACAddress = "84:39:be:03:00:97";
+          Address = "10.1.1.2";
+        }
+      ];
     };
   };
 
@@ -59,14 +71,12 @@
     allowedTCPPorts = [
       22 # ssh
       53 # dns
-      67
-      68
       80
       3000 # adguardhome
     ];
     allowedUDPPorts = [
-      53
-      67
+      53 # dns
+      67 # DHCP Server, 不能关
     ];
   };
 
@@ -78,6 +88,9 @@
       prefetch-domain = true;
       speed-check-mode = "tcp:443,tcp:80,ping";
       log-level = "info";
+      address = [
+        "/.home/10.1.1.2"
+      ];
       server-https = [
         "https://1.0.0.1/dns-query"
         "https://1.1.1.1/dns-query"
@@ -97,8 +110,7 @@
     };
   };
 
-  # AdGuard Home 需要监听在 10.8.8.8:53，因为 DHCP 已经告知客户端 DNS 是 10.8.8.8
-  # 然后 AdGuard Home 将 DNS 请求转发给 SmartDNS (10.8.8.8:5300)
+  # AdGuard Home 将 DNS 请求转发给 SmartDNS (127.0.0.1:5300)
   services.adguardhome = {
     enable = true;
     openFirewall = false;
@@ -106,7 +118,7 @@
     settings = {
       dns = {
         bind_hosts = [
-          "10.8.8.8"
+          "10.1.1.1"
           "127.0.0.1"
         ];
         port = 53;
