@@ -18,6 +18,7 @@
 
   networking.useDHCP = false; # 全局禁用 useDHCP，因为我们将在 networkd 中手动配置
   networking.useNetworkd = true;
+  services.resolved.enable = false;
 
   # 配置两个网口
   systemd.network = {
@@ -73,11 +74,33 @@
       53 # dns
       80
       3000 # adguardhome
+      7890
+      9090
     ];
     allowedUDPPorts = [
       53 # dns
       67 # DHCP Server, 不能关
     ];
+  };
+  # 信任 mihomo tun 模式的虚拟网卡
+  networking.firewall.trustedInterfaces = [ "Meta" ];
+  # TUN 模式通常需要关闭反向路径过滤，否则包会被丢弃
+  networking.firewall.checkReversePath = false;
+
+  # 配置 Mihomo
+  services.mihomo = {
+    enable = true;
+    tunMode = true;
+    configFile = "/var/lib/mihomo/config.yaml";
+    webui = pkgs.unstable.metacubexd;
+  };
+
+  systemd.services.mihomo = {
+    serviceConfig = {
+      # 允许绑定 53 这种特权端口
+      AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+      CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+    };
   };
 
   # SmartDNS 服务配置
@@ -87,7 +110,7 @@
     settings = {
       prefetch-domain = true;
       speed-check-mode = "tcp:443,tcp:80,ping";
-      log-level = "info";
+      log-level = "error";
       address = [
         "/.home/10.1.1.2"
       ];
@@ -121,7 +144,7 @@
           "10.1.1.1"
           "127.0.0.1"
         ];
-        port = 53;
+        port = 5301;
         # 配置上游为 SmartDNS
         upstream_dns = [
           "127.0.0.1:5300"
