@@ -17,13 +17,7 @@
     ./router_core.nix
   ];
 
-  nix.settings.substituters = [
-    "https://cache.nixos.org"
-  ];
-
-  nix.settings.trusted-public-keys = [
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-  ];
+  nix.settings.substituters = [ "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" ];
 
   nix.settings.auto-optimise-store = true;
 
@@ -35,7 +29,7 @@
   swapDevices = [
     {
       device = "/swapfile";
-      size = 4 * 1024;
+      size = 1 * 1024;
     }
   ];
 
@@ -128,12 +122,16 @@
     unar
     unzip
 
+    arp-scan
+    bandwhich
     btop
-    dig
+    doggo
     htop
     killall
     lsof
     nmap
+    procs
+    trippy
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

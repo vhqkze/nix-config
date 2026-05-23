@@ -33,6 +33,20 @@
   networking.useNetworkd = true;
   services.resolved.enable = false;
 
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = false;
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = false;
+      userServices = false;
+    };
+    # 确保只在 LAN 口上开启
+    allowInterfaces = [ "enu1" ];
+  };
+
   # 配置两个网口
   systemd.network = {
     enable = true;
@@ -94,6 +108,7 @@
     allowedUDPPorts = [
       53 # dns
       67 # DHCP Server, 不能关
+      5353 # mDNS
     ];
   };
   # 信任 mihomo tun 模式的虚拟网卡
