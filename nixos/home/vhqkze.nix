@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  nixpkgs-unstable,
   zen-browser,
   ...
 }:
@@ -94,7 +93,7 @@
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Developer/dotfiles/prettier/prettierrc.json";
 
   home.packages = with pkgs; [
-    nixfmt-rfc-style
+    nixfmt
     wofi
     rofi
     waybar

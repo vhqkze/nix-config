@@ -142,6 +142,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  nixpkgs.overlays = [
+    (final: prev: {
+      unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
+    })
+  ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -168,7 +174,11 @@
     htop
     btop
     iotop
-    dig
+    doggo
+    trippy
+    bandwhich
+    procs
+    arp-scan
     lsof
     moreutils
     killall
@@ -180,10 +190,10 @@
     jq
     aria2
     android-tools
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.lazygit
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.yazi
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.tmux
-    inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.neovim
+    unstable.lazygit
+    unstable.yazi
+    unstable.tmux
+    unstable.neovim
   ];
 
   fonts.fontDir.enable = true;
@@ -270,6 +280,10 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  users.users.vhqkze.openssh.authorizedKeys.keys = [
+    # mbp
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPrcm51SikiK/ynIp6hFFvNXwCKvngpocvO0v0MAoxw/"
+  ];
 
   # services.rustdesk-server = {
   #   enable = true;
