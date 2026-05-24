@@ -19,9 +19,14 @@
     ./service
   ];
 
+  nix.settings.substituters = [ "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" ];
+  nix.settings.auto-optimise-store = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   swapDevices = [
     {
