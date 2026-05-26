@@ -6,9 +6,13 @@
 }:
 {
   imports = [
-    ./gatus.nix
-    ./webdav.nix
-    ./tailscale.nix
+    ./avahi.nix
+    ./beszel.nix
     ./fail2ban.nix
+    ./filebrowser.nix
+    ./gatus.nix
+    ./readeck.nix
+    ./tailscale.nix
+    ./webdav.nix
   ];
 }

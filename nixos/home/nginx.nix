@@ -34,6 +34,7 @@
         url:
         base {
           "/".proxyPass = url;
+          "/".proxyWebsockets = true;
         };
     in
     {
@@ -45,7 +46,11 @@
       "dev.home" = proxy 6610;
       "dockge.home" = proxy 5001;
       "docker.home" = proxy 9412;
-      "file.home" = proxy 8084;
+      "file.home" = proxy 8084 // {
+        extraConfig = ''
+          client_max_body_size 10G;
+        '';
+      };
       "gitness.home" = proxy 3010;
       "grafana.home" = proxy 3000;
       "hoppscotch.home" = proxy 3101;
@@ -63,12 +68,12 @@
       };
       "scrutiny.home" = proxy 8085;
       "wifi.home" = proxyRemote "http://tplogin.cn/";
-      "clash.home" = proxyRemote "http://openwrt:9090/ui/dashboard/"; # 307
+      "clash.home" = proxyRemote "http://router.local:9090/";
       "xiaoya.home" = proxy 5678;
       "status.home" = proxy 7020;
       "money.home" = proxy 7080;
-      "adguard.home" = proxyRemote "http://openwrt:3000/";
-      "router.home" = proxyRemote "http://openwrt/";
+      "adguard.home" = proxyRemote "http://router.local:3000/";
+      "readeck.home" = proxy 9020;
 
       "webdav.home" = {
         locations."/" = {

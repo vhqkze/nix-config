@@ -69,25 +69,5 @@
       ];
       onFailure = [ "service_fail_notify@%n.service" ];
     };
-    healthcheckio = {
-      script = ''
-        ${pkgs.curl}/bin/curl \
-          --fail \
-          --show-error --silent \
-          --max-time 10 \
-          --retry 3 \
-          $CHECK_URL
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = "vhqkze";
-        RemainAfterExit = false;
-        EnvironmentFile = config.sops.secrets."service/healthcheckio".path;
-      };
-      startAt = [
-        "*-*-* *:*:00"
-      ];
-      onFailure = [ "service_fail_notify@%n.service" ];
-    };
   };
 }
