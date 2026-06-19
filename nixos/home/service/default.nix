@@ -12,7 +12,7 @@
     ./filebrowser.nix
     ./gatus.nix
     ./readeck.nix
-    ./tailscale.nix
+    ./restic.nix
     ./webdav.nix
   ];
 }

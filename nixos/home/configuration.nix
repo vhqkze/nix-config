@@ -229,6 +229,8 @@
       "service/beszel_agent" = { };
       "service/filebrowser" = { };
       "service/readeck" = { };
+      "service/restic/repo" = { };
+      "service/restic/password" = { };
       "mkcert/rootCA.pem" = {
         format = "binary";
         sopsFile = ./secrets/mkcert-ca.pem.asc;
