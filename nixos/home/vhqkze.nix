@@ -11,15 +11,8 @@
 
   xdg.userDirs = {
     enable = true; # 启用 xdg.userDirs 模块
+    setSessionVariables = true;
     createDirectories = true;
-    desktop = "$HOME/Desktop";
-    documents = "$HOME/Documents";
-    download = "$HOME/Downloads";
-    music = "$HOME/Music";
-    pictures = "$HOME/Pictures";
-    publicShare = "$HOME/Public";
-    templates = "$HOME/Templates";
-    videos = "$HOME/Videos";
   };
   # xdg.mimeApps.defaultApplications = {
   #   "x-terminal-emulator.desktop" = [ "wezterm.desktop" ];
@@ -98,16 +91,12 @@
     rofi
     waybar
     glow
-    oh-my-zsh
     nixd
     hugo
     hexyl
     lazydocker
-    pipx
     mpv
 
-    python314
-    poetry
     nodejs_24
     # nixpkgs-unstable.legacyPackages.aarch64-linux.albert
     # (pkgs.cherry-studio.overrideAttrs (oldAttrs: rec {

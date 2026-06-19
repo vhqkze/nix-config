@@ -101,7 +101,6 @@
   # services.xserver.libinput.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
   programs.hyprland.enable = true;
 
@@ -109,14 +108,10 @@
   users.users.vhqkze = {
     isNormalUser = true;
     description = "vhqkze";
-    # group = "users";
     extraGroups = [
       "networkmanager"
       "wheel"
       "docker"
-    ];
-    packages = with pkgs; [
-      #  thunderbird
     ];
   };
 
@@ -153,6 +148,7 @@
   environment.systemPackages = with pkgs; [
     wezterm
     starship
+    oh-my-zsh
     zoxide
     atuin
     age
@@ -170,6 +166,8 @@
     systemctl-tui
     mkcert
     tree-sitter
+    uv
+    python314
 
     htop
     btop
@@ -182,6 +180,7 @@
     lsof
     moreutils
     killall
+    witr
 
     lnav
     unzip
@@ -190,6 +189,7 @@
     jq
     aria2
     android-tools
+    asciidoctor-with-extensions
     unstable.lazygit
     unstable.yazi
     unstable.tmux
