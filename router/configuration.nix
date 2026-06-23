@@ -84,7 +84,6 @@
   # };
 
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
 
   nixpkgs.config.allowUnfree = true;
@@ -102,6 +101,7 @@
     unstable.yazi
     unstable.atuin
     unstable.lnav
+    unstable.lazygit
 
     nixfmt
 
@@ -109,6 +109,7 @@
     eza
     fd
     git
+    delta
     moreutils
     oh-my-zsh
     ripgrep
@@ -132,6 +133,7 @@
     nmap
     procs
     trippy
+    witr
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

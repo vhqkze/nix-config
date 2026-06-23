@@ -92,29 +92,31 @@
   };
 
   # 配置防火墙
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = lib.mkForce [ ];
-  networking.firewall.allowedUDPPorts = lib.mkForce [ ];
-  networking.firewall.interfaces."enu1" = {
-    allowedTCPPorts = [
-      22 # ssh
-      53 # dns
-      80
-      3000 # adguardhome
-      7890
-      9090
-      45876 # beszel agent
-    ];
-    allowedUDPPorts = [
-      53 # dns
-      67 # DHCP Server, 不能关
-      5353 # mDNS
-    ];
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = lib.mkForce [ ];
+    allowedUDPPorts = lib.mkForce [ ];
+    interfaces."enu1" = {
+      allowedTCPPorts = [
+        22 # ssh
+        53 # dns
+        80
+        3000 # adguardhome
+        7890
+        9090
+        45876 # beszel agent
+      ];
+      allowedUDPPorts = [
+        53 # dns
+        67 # DHCP Server, 不能关
+        5353 # mDNS
+      ];
+    };
+    # 信任 mihomo tun 模式的虚拟网卡
+    trustedInterfaces = [ "Meta" ];
+    # TUN 模式通常需要关闭反向路径过滤，否则包会被丢弃
+    checkReversePath = false;
   };
-  # 信任 mihomo tun 模式的虚拟网卡
-  networking.firewall.trustedInterfaces = [ "Meta" ];
-  # TUN 模式通常需要关闭反向路径过滤，否则包会被丢弃
-  networking.firewall.checkReversePath = false;
 
   # 配置 Mihomo
   services.mihomo = {
