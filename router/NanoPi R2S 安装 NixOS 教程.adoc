@@ -1,0 +1,401 @@
+= NanoPi R2S 安装 NixOS 教程
+vhqkze
+:keywords: NanoPi R2S, NixOS, 路由器
+:description: NanoPi R2S 安装 NixOS 教程
+:icons: font
+:toc: auto
+:sectnums:
+:sectlinks:
+:sectanchors:
+
+
+== 背景
+我有一个 NanoPi R2S 设备，安装了 openwrt 系统用作路由器，但是系统很久没有更新了，想要换成 NixOS 系统，但是找了一圈教程，也没有看明白具体怎么做，最后参考 link:https://noise.amono.me/posts/nanopi-r2s-nixos/[在 NanoPi R2S 上运行 NixOS^] 和 AI 的帮助下，成功安装系统，我这里将我的完整步骤写出来，做为一个无需动脑子的教程，只要按照下面的步骤操作，就能够成功启动系统，方便我以后或者你安装系统。
+
+NOTE:: 这篇教程只适用于 NanoPi R2S 设备。
+
+== 准备
+* 一个有安装 nix 的设备，用于构建镜像。我这边是一个 x86 的 NixOS 设备
+* NanoPi R2S 设备
+* 一个 SD 卡，建议使用高速、高可用的 SD 卡，容量不要少于 16 GB，建议 32GB
+
+== 安装步骤
+
+=== 配置主机
+
+因为我的 NixOS 设备是 x86 架构，而 NanoPi R2S 使用 ARMv8 架构 (aarch64)，为了能够构建 aarch64-linux 的产物，需要配置 `binfmt`，修改我当前系统的 `configuration.nix` 文件，加入以下内容（如果你的构建机直接就是 aarch64-linux，可以省略这一步，如果是其他架构，请自行查找对应的配置。
+
+[source, nix]
+----
+boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+----
+
+保存配置后，应用新配置
+
+[source, bash]
+----
+sudo nixos-rebuild switch
+----
+
+=== 确定 SD 卡名称
+
+将 SD 卡插入构建机，先使用 `lsblk` 或 `fdisk -l` 命令，找到 SD 卡的设备路径，在我这里，SD 卡是 `/dev/sdb`
+
+=== 克隆原始仓库
+
+[source, bash]
+----
+git clone https://github.com/AsterisMono/flake.git
+cd flake
+# 切换到原教程中使用过的特定提交，确保一致性
+git checkout 794719e2df37a5bbcc5e2340cce7a4b0f244ccd7
+----
+
+=== 构建 U-boot
+
+在刚刚下载的 git 仓库里，执行语句
+
+[source, bash]
+----
+nix build .#packages.aarch64-linux.uboot-nanopi-r2s.default
+----
+
+成功后，会看到一个 `result` 符号链接，指向构建好的 U-boot 文件。
+
+[source, console]
+----
+$ eza result
+.r--r--r-- 127k root 1970-01-01 08:00:01 idbloader.img
+dr-xr-xr-x    - root 1970-01-01 08:00:01 nix-support
+.r--r--r-- 9.4M root 1970-01-01 08:00:01 u-boot-rockchip.bin
+.r--r--r-- 995k root 1970-01-01 08:00:01 u-boot.itb
+----
+
+=== 写入 U-boot 到 SD 卡
+
+将刚才获得的文件写入到 SD 卡，注意 `of=/dev/sdb`，其中 `/dev/sdb` 是 SD 卡的设备路径，根据你的情况修改
+
+[source, bash]
+----
+sudo dd if=$(readlink -f result/idbloader.img) of=/dev/sdb seek=64 conv=notrunc,fsync
+sudo dd if=$(readlink -f result/u-boot.itb) of=/dev/sdb seek=16384 conv=notrunc,fsync
+----
+
+=== 对 SD 卡分区
+
+需要对 SD 卡分成两个分区，一个用于 `/boot`，一个用于 `/` (root)，我这里使用 `fdisk` 命令进行分区。
+
+[source, console]
+----
+$ sudo fdisk /dev/sdb  <1>
+
+欢迎使用 fdisk (util-linux 2.41.3)。
+更改将停留在内存中，直到您决定将更改写入磁盘。
+使用写入命令前请三思。
+
+
+命令(输入 m 获取帮助)：g  <2>
+已创建新的 GPT 磁盘标签(GUID: 774C2B65-DC46-4D89-BDBC-4F5E3013CF44)。
+设备已包含一个 'dos' 签名，写入命令会将其移除。请参见 fdisk(8) 的手册页和 --wipe 选项以了解更多细节。  <3>
+
+命令(输入 m 获取帮助)：n   <4>
+分区号 (1-128, 默认  1): 1   <5>
+第一个扇区 (2048-62333918, 默认 2048): 32768  <6>
+最后一个扇区，+/-sectors 或 +size{K,M,G,T,P} (32768-62333918, 默认 62332927): +512M  <7>
+
+创建了一个新分区 1，类型为“Linux filesystem”，大小为 512 MiB。
+
+命令(输入 m 获取帮助)：n  <8>
+分区号 (2-128, 默认  2): 2  <9>
+第一个扇区 (2048-62333918, 默认 1081344):  <10>
+最后一个扇区，+/-sectors 或 +size{K,M,G,T,P} (1081344-62333918, 默认 62332927):  <11>
+
+创建了一个新分区 2，类型为“Linux filesystem”，大小为 29.2 GiB。
+
+命令(输入 m 获取帮助)：w  <12>
+分区表已调整。
+将调用 ioctl() 来重新读分区表。
+正在同步磁盘。
+----
+<1> 注意这里的设备名称
+<2> 这里会要求输入命令，这里先输入 `g` 然后按回车键，创建一个新的 GPT 分区表
+<3> 我这一行会显示为红色，不用管它
+<4> 输入 `n` 然后按回车键，开始创建第一个分区
+<5> 输入 `1` 或者不输入使用默认值，表示第一个分区的分区号
+<6> 输入 `32768` 或者使用默认值，表示扇区起始位置
+<7> 输入 `{plus}512M` 表示扇区大小，注意有个 `+` 号
+<8> 输入 `n` 开始创建第二个分区
+<9> 输入 `2` 或者不输入使用默认值，表示第二个分区的分区号
+<10> 直接按回车，使用默认值
+<11> 直接按回车，使用默认值，表示将剩余空间都分给这个分区
+<12> 按 `w` 表示确认无误，开始写入分区表并退出
+
+=== 格式化分区
+
+格式化新创建的两个分区为 ext4 文件系统，并设置卷标。
+
+[source, bash]
+----
+sudo mkfs.ext4 -L NIXOS_BOOT /dev/sdb1
+sudo mkfs.ext4 -L NIXOS_SD /dev/sdb2
+----
+
+=== 挂载分区
+
+按顺序执行下面的命令，将两个分区都挂载到系统，注意顺序，是先挂载 `/dev/sdb2`，再挂载 `/dev/sdb1`，我这里是挂载到 `/mnt/nanopi` 目录。
+
+[source, bash]
+----
+# 创建一个空目录 /mnt/nanopi 用作挂载点
+sudo mkdir -p /mnt/nanopi
+sudo mount /dev/sdb2 /mnt/nanopi
+sudo mkdir -p /mnt/nanopi/boot
+sudo mount /dev/sdb1 /mnt/nanopi/boot
+----
+
+=== 开始构建系统
+
+在之前克隆的 flake 仓库根目录里，执行下面的命令
+
+[source, bash]
+----
+nix build .#nixosConfigurations.ivy.config.system.build.toplevel --system aarch64-linux
+----
+
+这个命令会执行的久一些。
+
+=== 复制 Nix Store 到 SD 卡
+
+当构建完成后，`result` 符号链接将指向构建好的 NixOS 系统。然后将整个 Nix store 复制到 SD 卡上。
+
+[source, bash]
+----
+sudo nix copy --to /mnt/nanopi "$(readlink -f result)" --no-check-sigs
+sync
+----
+
+然后检查一下目标 store 是否可用，如果像我下面这样的类似输出，即表示成功。
+
+[source, console]
+----
+$ sudo nix store info --store /mnt/nanopi
+Store URL: local
+Version: 2.31.2
+Trusted: 1
+----
+
+=== 安装 Kernel、Initrd 和 Device Tree Blob (DTB)
+
+安装文件到 `/mnt/nanopi/boot`
+
+[source, bash]
+----
+sudo install -Dm644 "$(readlink -f result/kernel)" /mnt/nanopi/boot/Image
+sudo install -Dm644 "$(readlink -f result/initrd)" /mnt/nanopi/boot/initrd
+sudo install -Dm644 result/dtbs/rockchip/rk3328-nanopi-r2s.dtb /mnt/nanopi/boot/rk3328-nanopi-r2s.dtb
+----
+
+=== 创建 extlinux.conf
+
+创建 `extlinux.conf` 文件
+
+[source, bash]
+----
+sudo mkdir -p /mnt/nanopi/boot/extlinux
+sudo touch /mnt/nanopi/boot/extlinux/extlinux.conf
+----
+
+复制粘贴以下内容到 `extlinux.conf` 文件里，注意最后一行 `init` 的值需要修改，可以先执行 `readlink -f result/kernel` 命令，假如输出为 `/nix/store/8vflz5sv4mjprkirpq8xfnwi34x60r0y-nixos-system-ivy-25.05.20250817.48f4c98`，则 `init` 的值为 `/nix/store/8vflz5sv4mjprkirpq8xfnwi34x60r0y-nixos-system-ivy-25.05.20250817.48f4c98/init`
+
+[source, text]
+----
+DEFAULT NixOS
+TIMEOUT 1
+LABEL NixOS
+   KERNEL /Image
+   INITRD /initrd
+   FDT /rk3328-nanopi-r2s.dtb
+   APPEND console=ttyS2,1500000 earlycon=uart8250,mmio32,0xff130000 root=LABEL=NIXOS_SD rootfstype=ext4 rootwait init=$INIT_PATH
+----
+
+=== 运行 nixos-install
+
+执行 `nixos-install` 命令，完成安装
+
+[source, bash]
+----
+sudo nixos-install --flake .#ivy --root /mnt/nanopi --verbose --show-trace --no-bootloader --no-root-passwd
+----
+
+如果一切顺利，你会看到 `installation finished!` 的消息。
+
+=== 配置 ssh 私钥登录
+
+获取当前设备的 ssh 公钥（如果没有，就先使用 `ssh-keygen` 命令生成一个），然后写入到 `/mnt/nanopi/root/.ssh/authorized_keys`
+
+[source, bash]
+----
+cat ~/.ssh/id_ed25519.pub | sudo tee /mnt/nanopi/root/.ssh/authorized_keys
+sudo chmod 600 /mnt/nanopi/root/.ssh/authorized_keys
+----
+
+执行这一步，等会上电启动后，就可以使用私钥登录，无需密码了。尽管前一步里有个参数 `--no-root-passwd`，但是实际上我这边登录时仍需要密码，只能回头操作这一步。
+
+
+=== 卸载 SD 卡
+
+经过以上步骤，SD 卡的全部准备工作都已经完成了，我们先卸载分区再拔掉。
+
+[source, bash]
+----
+# 注意顺序
+sudo umount /mnt/nanopi/boot
+sudo umount /mnt/nanopi
+----
+
+=== 上电启动
+
+将 SD 卡插入 NanoPi R2S 的 SD 卡槽，连接网线（NanoPi R2S 有两个网口，现在连哪个口都可以），连接电源，等待几分钟，然后可以去路由器上找到新增加的设备，或者使用 `nmap -sn 192.168.1.0/24` (替换为你的网段) 等工具扫描新上线的设备，然后使用 ssh 登录
+
+[source, bash]
+----
+ssh root@<NanoPi_R2S_IP_地址>
+----
+
+[NOTE]
+====
+通过之前的步骤安装的系统的主机名是 `ivy`，也可以试试直接通过主机名称登录： `ssh root@ivy`，如果不行再找 ip 吧（这个我没有试过，我直接用 ip 登录的）。
+====
+
+=== 系统配置
+
+到这里，给 NanoPi R2S 安装 NixOS 系统就已经完成了，剩下的就是配置系统了。在进入系统后，我像往常一样，直接进入 `/etc/nixos`，然后发现这里空空如也，但是不用慌，可以先使用 `nixos-generate-config` 命令生成 `configuration.nix` 和 `hardware-configuration.nix` 文件，然后编辑这两个文件，然后再执行 `nixos-rebuild switch` 命令，就能够配置系统了，或者也可以使用我的配置文件先安装一些基础软件和配置
+
+[source, bash]
+----
+# 先临时使用必须的几个命令
+nix shell nixpkgs#git nixpkgs#neovim
+# 创建 ~/Developer 目录，我习惯将代码放到这里
+mkdir -p ~/Developer
+# 克隆
+git clone https://github.com/vhqkze/dotfiles.git ~/Developer/dotfiles
+cd ~/Developer/dotfiles
+# 切换到基础配置的 commit
+git checkout 0e7d07e843b7bc73785ce20d95ce1dcf07470290
+# 进入到配置目录
+cd router
+# 修改 configuration.nix 文件里 users.users.root.openssh.authorizedKeys.keys 部分的公钥为你自己的
+nvim configuration.nix
+# 部署
+nixos-rebuild switch --flake .#router
+----
+
+部署成功后，主机名为 `router`，此时它还只是一台普通的上网设备。
+
+== 转为路由器设备
+
+我给 NanoPi R2S 设备安装 NixOS 系统的目的，就是让它成为我的路由器，如果你只是需要它做为一个普通的上网设备，那么下面的部分就不用看了。
+
+=== 开启端口转发
+
+这是路由器的重点，NanoPi R2S 设备有两个网口，成为路由器需要开启端口转发，在 `configuration.nix` 文件里添加以下内容
+
+[source, nix]
+----
+# 启用 IP 转发
+boot.kernel.sysctl = {
+  "net.ipv4.conf.all.forwarding" = 1;
+  "net.ipv4.conf.default.forwarding" = 1;
+  # 开启 BBR
+  "net.core.default_qdisc" = "fq";
+  "net.ipv4.tcp_congestion_control" = "bbr";
+};
+----
+
+=== 配置网口
+
+NanoPi R2S 设备有两个网口，名称为 `end0` 和 `enu1`（网口名可以通过命令 `ip -br a` 查看），其中靠近电源接口的网口是 `enu1`，远离电源接口的网口是 `end0`，我这边是将 `end0` 配置为 WAN 口，`enu1` 配置为 LAN 口，配置 LAN 口 ip 为 `10.1.1.1`（也即部署成功后 NanoPi R2S 做为路由器在局域网的ip），并且将 `10.1.1.10` ~ `10.1.1.200` 分配给局域网设备，我的配置如下
+
+[source, nix]
+----
+networking.useDHCP = false; # 全局禁用 useDHCP，因为我们将在 networkd 中手动配置
+networking.useNetworkd = true;
+services.resolved.enable = false;
+
+# 配置NAT
+networking.nat = {
+  enable = true;
+  externalInterface = "end0"; # 替换为您的实际WAN口名称
+  internalInterfaces = [ "enu1" ]; # 替换为您的实际LAN口名称
+};
+
+systemd.network = {
+  enable = true;
+  # WAN 口 (end0) - 从光猫获取 IP
+  networks."10-wan" = {
+    matchConfig.Name = "end0";
+    networkConfig = {
+      DHCP = "ipv4";
+      IPv4Forwarding = "yes";
+    };
+    dhcpV4Config.RouteMetric = 10;
+  };
+  # LAN 口 (enu1) - 静态 IP 10.1.1.1
+  networks."20-lan" = {
+    matchConfig.Name = "enu1";
+    address = [ "10.1.1.1/24" ];
+    networkConfig = {
+      IPv4Forwarding = "yes";
+      DHCPServer = "yes";
+    };
+    dhcpServerConfig = {
+      PoolOffset = 10;
+      PoolSize = 200;
+      EmitDNS = "yes";
+      DNS = [ "10.1.1.1" ]; # 这里不能写 127.0.0.1
+    };
+    dhcpServerStaticLeases = [
+      # 这里不要对 Mac 等开启了 私有Wi-Fi地址 的设备配置静态ip，要不然会获取不到ip
+      {
+        MACAddress = "84:39:be:03:00:97";
+        Address = "10.1.1.2";
+      }
+    ];
+  };
+};
+----
+
+=== 防火墙
+
+在防火墙开放某个端口时，不要在像其他设备一样写 `networking.firewall.allowedTCPPorts` 了，这样会同时在 WAN 口和 LAN 口都开放，也即局域网外的设备也能连接了，为了安全，应该只在 LAN 口开放
+
+[source, nix]
+----
+networking.firewall = {
+  enable = true;
+  allowedTCPPorts = lib.mkForce [ ]; # 这里强制清空它，避免其他地方误开放端口
+  allowedUDPPorts = lib.mkForce [ ]; # 这里强制清空它，避免其他地方误开放端口
+  interfaces."enu1" = { # enu1 是 LAN 口
+    allowedTCPPorts = [
+      22 # ssh
+      53 # dns
+      80
+      3000 # adguardhome
+    ];
+    allowedUDPPorts = [
+      53 # dns
+      67 # DHCP Server, 不能关
+      5353 # mDNS
+    ];
+  };
+};
+----
+
+还要注意，很多 service 都有 `openFirewall` 选项，这个也不要设置为 `true`，因为它会在全部端口开放，正确做法是设置为 `false`，然后在上面的设置里针对 LAN 口开放。
+
+=== 转为路由器
+
+经过上面的配置后，执行 `nixos-rebuild switch` 后，可能不能立即成为路由器，重启它，用网线将光猫和 WAN 口连接，然后它应该就能够做为路由器使用了。可以查看我的路由器配置： link:https://github.com/vhqkze/dotfiles/tree/8c232f0f7746a0ee545326cc34f060cfba445ae5/router[^]
+
+== 参考
+* link:https://noise.amono.me/posts/nanopi-r2s-nixos/[在 NanoPi R2S 上运行 NixOS^]
