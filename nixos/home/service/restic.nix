@@ -47,27 +47,27 @@ in
 {
   services.restic.backups = {
     docker-homepage = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/homepage" ];
+      paths = [ "/srv/docker/homepage" ];
       calendar = "05:00";
       tag = "homepage";
     };
     docker-linkding = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/linkding" ];
+      paths = [ "/srv/docker/linkding" ];
       calendar = "05:05";
       tag = "linkding";
     };
     docker-memos = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/memos" ];
+      paths = [ "/srv/docker/memos" ];
       calendar = "05:10";
       tag = "memos";
     };
     docker-plex = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/plex" ];
+      paths = [ "/srv/docker/plex" ];
       calendar = "05:15";
       tag = "plex";
     };
     docker-ezbookkeeping = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/ezbookkeeping" ];
+      paths = [ "/srv/docker/ezbookkeeping" ];
       calendar = "05:20";
       tag = "ezbookkeeping";
     };
@@ -79,22 +79,22 @@ in
       tag = "readeck";
     };
     grimmory = makeBackup {
-      paths = [ "/home/vhqkze/Developer/docker/grimmory" ];
+      paths = [ "/srv/docker/grimmory" ];
       backupPrepareCommand = ''
-        ${pkgs.docker}/bin/docker exec grimmory_db sh -c 'exec /usr/bin/mariadb-dump -u root --password="$MYSQL_ROOT_PASSWORD" --all-databases --single-transaction --quick --routines --triggers --events' > /home/vhqkze/Developer/docker/grimmory/dump.sql
+        ${pkgs.docker}/bin/docker exec grimmory_db sh -c 'exec /usr/bin/mariadb-dump -u root --password="$MYSQL_ROOT_PASSWORD" --all-databases --single-transaction --quick --routines --triggers --events' > /srv/docker/grimmory/dump.sql
       '';
-      backupCleanupCommand = "rm /home/vhqkze/Developer/docker/grimmory/dump.sql";
+      backupCleanupCommand = "rm /srv/docker/grimmory/dump.sql";
       calendar = "05:30";
       tag = "grimmory";
       # 恢复步骤
       # 先停止当前容器
       # sc-stop docker-grimmory_db.service
       # 删除 grimmory_db 挂载的文件
-      # sudo rm -rf /home/vhqkze/Developer/docker/grimmory_db
+      # sudo rm -rf /srv/docker/grimmory_db
       # 新生成一个干净的 grimmory_db 容器
       # sc-start docker-grimmory_db.service
       # 导出备份sql文件到当前目录
-      # sudo restic-grimmory restore 46941cc7:/home/vhqkze/Developer/docker/grimmory --target ./ --include /dump.sql
+      # sudo restic-grimmory restore 46941cc7:/srv/docker/grimmory --target ./ --include /dump.sql
       # 将备份sql文件复制到容器内 /tmp/backup.sql 位置
       # docker cp ./dump.sql grimmory_db:/tmp/backup.sql
       # 执行恢复，注意命令里的 $MYSQL_ROOT_PASSWORD 是容器内部的环境变量，这个环境变量需要存在

@@ -222,6 +222,7 @@
       "docker/grimmory_db" = { };
       "docker/plex" = { };
       "docker/ezbookkeeping" = { };
+      "docker/tugtainer" = { };
       "service/bark_me" = { };
       "service/bark_xz" = { };
       "service/weather" = { };

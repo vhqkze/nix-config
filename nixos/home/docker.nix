@@ -10,7 +10,7 @@
 
   virtualisation.oci-containers.containers =
     let
-      dockerdata = "${config.users.users.vhqkze.home}/Developer/docker";
+      dockerdata = "/srv/docker";
       uid = "1000";
       # uid = toString config.users.users.vhqkze.uid; # 不能用这个，这个值是空的
       gid = toString config.users.groups.${config.users.users.vhqkze.group}.gid;
@@ -121,6 +121,7 @@
       tugtainer = {
         image = "quenary/tugtainer:latest";
         ports = [ "9412:80" ];
+        environmentFiles = [ config.sops.secrets."docker/tugtainer".path ];
         volumes = [
           "${dockerdata}/tugtainer:/tugtainer"
           "/var/run/docker.sock:/var/run/docker.sock:ro"
