@@ -51,13 +51,17 @@ in
       calendar = "05:00";
       tag = "homepage";
     };
-    docker-linkding = makeBackup {
-      paths = [ "/srv/docker/linkding" ];
+    linkding = makeBackup {
+      paths = [ "/var/lib/linkding" ];
+      backupPrepareCommand = "systemctl stop linkding.service";
+      backupCleanupCommand = "systemctl start linkding.service";
       calendar = "05:05";
       tag = "linkding";
     };
-    docker-memos = makeBackup {
-      paths = [ "/srv/docker/memos" ];
+    memos = makeBackup {
+      paths = [ "/var/lib/memos" ];
+      backupPrepareCommand = "systemctl stop memos.service";
+      backupCleanupCommand = "systemctl start memos.service";
       calendar = "05:10";
       tag = "memos";
     };

@@ -132,5 +132,5 @@
   #   # package = vicinae.packages.${pkgs.system}.default; # 如果需要
   # };
 
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
 }

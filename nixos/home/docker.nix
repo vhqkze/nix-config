@@ -31,20 +31,6 @@
           "${dockerdata}/homepage/images:/app/public/images"
         ];
       };
-      linkding = {
-        image = "ghcr.io/sissbruecker/linkding:latest";
-        ports = [ "9090:9090" ];
-        volumes = [
-          "${dockerdata}/linkding:/etc/linkding/data"
-        ];
-      };
-      memos = {
-        image = "neosmemo/memos:stable";
-        ports = [ "5230:5230" ];
-        volumes = [
-          "${dockerdata}/memos/:/var/opt/memos"
-        ];
-      };
       plex = {
         image = "plexinc/pms-docker";
         environment = {

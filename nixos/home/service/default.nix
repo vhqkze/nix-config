@@ -11,6 +11,8 @@
     ./fail2ban.nix
     ./filebrowser.nix
     ./gatus.nix
+    ./linkding.nix
+    ./memos.nix
     ./readeck.nix
     ./restic.nix
     ./webdav.nix
