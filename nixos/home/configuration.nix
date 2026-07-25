@@ -122,11 +122,9 @@
     '';
   };
 
-  # security.pki.certificateFiles = [
-  #   这两个都不对，会报错找不到文件
-  #   config.sops.secrets."mkcert/rootCA.pem".path
-  #   "/run/secrets/mkcert/rootCA.pem"
-  # ];
+  security.pki.certificateFiles = [
+    ./secrets/rootCA.pem
+  ];
 
   system.activationScripts.myCustomTask = {
     text = ''
@@ -168,6 +166,7 @@
     tree-sitter
     uv
     python314
+    openssl
 
     htop
     btop
