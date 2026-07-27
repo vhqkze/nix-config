@@ -229,6 +229,7 @@
       "service/beszel_agent" = { };
       "service/linkding" = { };
       "service/filebrowser" = { };
+      "service/pocket-id" = { };
       "service/readeck" = { };
       "service/restic/repo" = { };
       "service/restic/password" = { };

@@ -106,5 +106,12 @@ in
       # 恢复完成，重启这个容器以删除备份sql文件（不删除也行）
       # sc-restart docker-grimmory_db.service
     };
+    pocket-id = makeBackup {
+      paths = [ config.services.pocket-id.dataDir ];
+      backupPrepareCommand = "systemctl stop pocket-id.service";
+      backupCleanupCommand = "systemctl start pocket-id.service";
+      calendar = "05:35";
+      tag = "pocket-id";
+    };
   };
 }

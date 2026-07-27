@@ -33,6 +33,10 @@
           );
       in
       {
+        "_" = base // {
+          default = true;
+          globalRedirect = "home";
+        };
         "home" = proxy 3300 { };
         "beszel.home" = proxy config.services.beszel.hub.port { };
         "book.home" = proxy 6060 {
@@ -75,6 +79,13 @@
         "money.home" = proxy 7080 { };
         "adguard.home" = proxy "http://router.local:3000" { };
         "readeck.home" = proxy config.services.readeck.settings.server.port { };
+        "pocket-id.home" = proxy config.services.pocket-id.settings.PORT {
+          extraConfig = ''
+            proxy_busy_buffers_size 512k;
+            proxy_buffers 4 512k;
+            proxy_buffer_size 256k;
+          '';
+        };
 
         "webdav.home" = proxy 9080 {
           extraConfig = ''

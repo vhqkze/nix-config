@@ -33,6 +33,7 @@ DOMAINS+=(
     "memos.home"
     "money.home"
     "plex.home"
+    "pocket-id.home"
     "readeck.home"
     "reader.home"
     "router.home"
