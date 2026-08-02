@@ -7,7 +7,7 @@ let
   makeBackup =
     {
       paths,
-      calendar,
+      calendar ? null,
       tag,
       exclude ? [ ],
       backupPrepareCommand ? null,
@@ -29,10 +29,14 @@ let
         tag
         "--retry-lock 30m"
       ];
-      timerConfig = {
-        OnCalendar = calendar;
-        Persistent = true;
-      };
+      timerConfig =
+        if calendar == null then
+          null
+        else
+          {
+            OnCalendar = calendar;
+            Persistent = true;
+          };
       pruneOpts = [
         "--tag auto"
         "--tag"
@@ -105,6 +109,10 @@ in
       # docker exec -it grimmory_db sh -c 'exec mariadb -u root --password="$MYSQL_ROOT_PASSWORD" -e "SOURCE /tmp/backup.sql;"'
       # 恢复完成，重启这个容器以删除备份sql文件（不删除也行）
       # sc-restart docker-grimmory_db.service
+    };
+    paperless = makeBackup {
+      paths = [ config.services.paperless.exporter.directory ];
+      tag = "paperless";
     };
     pocket-id = makeBackup {
       paths = [ config.services.pocket-id.dataDir ];

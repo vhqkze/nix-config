@@ -13,6 +13,7 @@
     ./gatus.nix
     ./linkding.nix
     ./memos.nix
+    ./paperless.nix
     ./pocket-id.nix
     ./readeck.nix
     ./restic.nix

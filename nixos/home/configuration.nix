@@ -222,6 +222,8 @@
       "docker/plex" = { };
       "docker/ezbookkeeping" = { };
       "docker/tugtainer" = { };
+      "paperless/password" = { };
+      "paperless/env" = { };
       "service/bark_me" = { };
       "service/bark_xz" = { };
       "service/weather" = { };
