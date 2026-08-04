@@ -13,8 +13,10 @@
     ./gatus.nix
     ./linkding.nix
     ./memos.nix
+    ./outline.nix
     ./paperless.nix
     ./pocket-id.nix
+    ./postgresql.nix
     ./readeck.nix
     ./restic.nix
     ./webdav.nix

@@ -61,6 +61,11 @@
         };
         "link.home" = proxy config.services.linkding.port { };
         "memos.home" = proxy config.services.memos.settings.MEMOS_PORT { };
+        "outline.home" = proxy config.services.outline.port {
+          locationExtra = {
+            proxyWebsockets = true;
+          };
+        };
         "plex.home" = proxy 32400 {
           locationExtra = {
             proxyWebsockets = true;

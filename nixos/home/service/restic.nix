@@ -110,6 +110,19 @@ in
       # 恢复完成，重启这个容器以删除备份sql文件（不删除也行）
       # sc-restart docker-grimmory_db.service
     };
+    outline = makeBackup {
+      paths = [
+        "/var/lib/outline"
+        "/tmp/postgres/outline_db.sql"
+      ];
+      backupPrepareCommand = ''
+        install -d -m 750 -o postgres -g postgres /tmp/postgres
+        ${config.security.wrapperDir}/sudo -u postgres ${pkgs.postgresql}/bin/pg_dump -F p --clean --if-exists -f /tmp/postgres/outline_db.sql outline
+      '';
+      backupCleanupCommand = "rm -rf /tmp/postgres";
+      calendar = "05:40";
+      tag = "outline";
+    };
     paperless = makeBackup {
       paths = [ config.services.paperless.exporter.directory ];
       tag = "paperless";

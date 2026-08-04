@@ -32,6 +32,7 @@ DOMAINS+=(
     "link.home"
     "memos.home"
     "money.home"
+    "outline.home"
     "paperless.home"
     "plex.home"
     "pocket-id.home"
