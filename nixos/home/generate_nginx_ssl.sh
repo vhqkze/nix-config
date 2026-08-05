@@ -42,6 +42,9 @@ DOMAINS+=(
     "status.home"
     "webdav.home"
     "wifi.home"
+    "*.s3.garage.home"
+    "*.web.garage.home"
+    "admin.garage.home"
 )
 
 mkcert -cert-file home/secrets/home.pem -key-file home/secrets/home-key.pem "${DOMAINS[@]}"

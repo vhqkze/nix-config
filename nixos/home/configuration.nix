@@ -222,6 +222,7 @@
       "docker/plex" = { };
       "docker/ezbookkeeping" = { };
       "docker/tugtainer" = { };
+      "garage" = { };
       "outline/secretKey".owner = "outline";
       "outline/utilsSecret".owner = "outline";
       "outline/oidcSecret".owner = "outline";
