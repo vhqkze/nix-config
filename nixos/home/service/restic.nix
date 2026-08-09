@@ -79,6 +79,13 @@ in
       calendar = "05:20";
       tag = "ezbookkeeping";
     };
+    forgejo = makeBackup {
+      paths = [ "/var/lib/forgejo" ];
+      backupPrepareCommand = "systemctl stop forgejo.service";
+      backupCleanupCommand = "systemctl start forgejo.service";
+      calendar = "05:45";
+      tag = "forgejo";
+    };
     readeck = makeBackup {
       paths = [ "/var/lib/private/readeck" ];
       backupPrepareCommand = "systemctl stop readeck.service";

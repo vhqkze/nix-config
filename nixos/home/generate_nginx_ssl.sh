@@ -28,6 +28,7 @@ DOMAINS+=(
     "clash.home"
     "docker.home"
     "file.home"
+    "git.home"
     "kavita.home"
     "link.home"
     "memos.home"

@@ -54,6 +54,7 @@
             client_max_body_size 10G;
           '';
         };
+        "git.home" = proxy "http://unix:${config.services.forgejo.settings.server.HTTP_ADDR}" { };
         "kavita.home" = proxy 5000 {
           locationExtra = {
             proxyWebsockets = true;

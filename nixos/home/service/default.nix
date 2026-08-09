@@ -10,6 +10,7 @@
     ./beszel.nix
     ./fail2ban.nix
     ./filebrowser.nix
+    ./forgejo.nix
     ./garage.nix
     ./gatus.nix
     ./linkding.nix
