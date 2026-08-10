@@ -14,6 +14,7 @@
     ./garage.nix
     ./gatus.nix
     ./linkding.nix
+    ./mariadb.nix
     ./memos.nix
     ./outline.nix
     ./paperless.nix

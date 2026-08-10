@@ -69,23 +69,9 @@
           "${dockerdata}/kavita/config:/kavita/config"
         ];
       };
-      grimmory_db = {
-        image = "mariadb:latest";
-        ports = [ "3306:3306" ];
-        environment = {
-          TZ = config.time.timeZone;
-          MYSQL_DATABASE = "grimmory";
-          MYSQL_USER = "grimmory";
-        };
-        environmentFiles = [ config.sops.secrets."docker/grimmory_db".path ];
-        volumes = [
-          "${dockerdata}/grimmory_db:/var/lib/mysql"
-        ];
-      };
       grimmory = {
         image = "ghcr.io/grimmory-tools/grimmory:latest";
         ports = [ "6060:6060" ];
-        dependsOn = [ "grimmory_db" ];
         environment = {
           USER_ID = uid;
           GROUP_ID = gid;

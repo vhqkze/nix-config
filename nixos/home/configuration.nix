@@ -218,7 +218,6 @@
       "webdav" = { };
       "nginx/reader".owner = "nginx";
       "docker/grimmory" = { };
-      "docker/grimmory_db" = { };
       "docker/plex" = { };
       "docker/ezbookkeeping" = { };
       "docker/tugtainer" = { };
@@ -366,16 +365,15 @@
   };
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-    3306
-    32400 # 要开启，要不然即使在局域网内，plex 也无法播放
-  ];
-  # networking.firewall.interfaces."lo".allowedTCPPorts = [ 3306 ];
-  # networking.firewall.allowedUDPPorts = [  ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = true;
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "docker0" ];
+    allowedTCPPorts = [
+      80
+      443
+      32400 # 要开启，要不然即使在局域网内，plex 也无法播放
+    ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

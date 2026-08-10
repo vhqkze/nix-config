@@ -94,28 +94,17 @@ in
       tag = "readeck";
     };
     grimmory = makeBackup {
-      paths = [ "/srv/docker/grimmory" ];
+      paths = [
+        "/srv/docker/grimmory"
+        "/tmp/mariadb/grimmory.sql"
+      ];
       backupPrepareCommand = ''
-        ${pkgs.docker}/bin/docker exec grimmory_db sh -c 'exec /usr/bin/mariadb-dump -u root --password="$MYSQL_ROOT_PASSWORD" --all-databases --single-transaction --quick --routines --triggers --events' > /srv/docker/grimmory/dump.sql
+        install -d -m 750 -o root -g root /tmp/mariadb
+        ${pkgs.mariadb}/bin/mariadb-dump --single-transaction --quick --routines --triggers --events -f grimmory > /tmp/mariadb/grimmory.sql
       '';
-      backupCleanupCommand = "rm /srv/docker/grimmory/dump.sql";
+      backupCleanupCommand = "rm -rf /tmp/mariadb";
       calendar = "05:30";
       tag = "grimmory";
-      # 恢复步骤
-      # 先停止当前容器
-      # sc-stop docker-grimmory_db.service
-      # 删除 grimmory_db 挂载的文件
-      # sudo rm -rf /srv/docker/grimmory_db
-      # 新生成一个干净的 grimmory_db 容器
-      # sc-start docker-grimmory_db.service
-      # 导出备份sql文件到当前目录
-      # sudo restic-grimmory restore 46941cc7:/srv/docker/grimmory --target ./ --include /dump.sql
-      # 将备份sql文件复制到容器内 /tmp/backup.sql 位置
-      # docker cp ./dump.sql grimmory_db:/tmp/backup.sql
-      # 执行恢复，注意命令里的 $MYSQL_ROOT_PASSWORD 是容器内部的环境变量，这个环境变量需要存在
-      # docker exec -it grimmory_db sh -c 'exec mariadb -u root --password="$MYSQL_ROOT_PASSWORD" -e "SOURCE /tmp/backup.sql;"'
-      # 恢复完成，重启这个容器以删除备份sql文件（不删除也行）
-      # sc-restart docker-grimmory_db.service
     };
     outline = makeBackup {
       paths = [
