@@ -1,9 +1,13 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
+  disabledModules = [ "services/misc/paperless.nix" ];
+  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/paperless.nix" ];
+
   services.paperless = {
     enable = true;
     package = pkgs.unstable.paperless-ngx;

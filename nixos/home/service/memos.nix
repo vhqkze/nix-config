@@ -1,9 +1,13 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
+  disabledModules = [ "services/misc/memos.nix" ];
+  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/memos.nix" ];
+
   services.memos = {
     enable = true;
     package = pkgs.unstable.memos;

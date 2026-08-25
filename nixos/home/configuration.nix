@@ -225,8 +225,8 @@
       "outline/secretKey".owner = "outline";
       "outline/utilsSecret".owner = "outline";
       "outline/oidcSecret".owner = "outline";
-      "paperless/password" = { };
-      "paperless/env" = { };
+      "paperless/password".owner = "paperless";
+      "paperless/env".owner = "paperless";
       "service/bark_me" = { };
       "service/bark_xz" = { };
       "service/weather" = { };
