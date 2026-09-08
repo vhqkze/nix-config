@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  zen-browser,
   ...
 }:
 {
@@ -117,20 +116,6 @@
     ZSH_CUSTOM = "$HOME/.local/share/oh-my-zsh/custom";
     # HELPDIR = "${pkgs.zsh}/share/zsh/${pkgs.zsh.version}/help";
   };
-
-  imports = [
-    zen-browser.homeModules.beta
-    # or inputs.zen-browser.homeModules.twilight
-    # or inputs.zen-browser.homeModules.twilight-official
-  ];
-
-  programs.zen-browser.enable = true;
-
-  # services.vicinae = {
-  #   enable = true;
-  #   autoStart = true;
-  #   # package = vicinae.packages.${pkgs.system}.default; # 如果需要
-  # };
 
   home.stateVersion = "26.05";
 }

@@ -126,11 +126,9 @@
     ./secrets/rootCA.pem
   ];
 
-  system.activationScripts.myCustomTask = {
-    text = ''
-      mkdir -p /var/lib/mkcert
-    '';
-  };
+  systemd.tmpfiles.rules = [
+    "d /var/lib/mkcert 0755 root root -"
+  ];
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

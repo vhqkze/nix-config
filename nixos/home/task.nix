@@ -24,7 +24,7 @@
     zhangle_me = {
       script = ''
         cd ${config.users.users.vhqkze.home}/Developer/minitools
-        ${pkgs.poetry}/bin/poetry run python gupiao/newgu.py
+        ${pkgs.uv}/bin/uv run python gupiao/newgu.py
       '';
       serviceConfig = {
         Type = "oneshot";
@@ -40,7 +40,7 @@
     zhangle_xz = {
       script = ''
         cd ${config.users.users.vhqkze.home}/Developer/minitools
-        ${pkgs.poetry}/bin/poetry run python gupiao/newgu.py
+        ${pkgs.uv}/bin/uv run python gupiao/newgu.py
       '';
       serviceConfig = {
         Type = "oneshot";
@@ -56,7 +56,7 @@
     weather = {
       script = ''
         cd ${config.users.users.vhqkze.home}/Developer/minitools
-        ${pkgs.poetry}/bin/poetry run python weather.py $WEATHER_LOCATION $CHECK_TIME
+        ${pkgs.uv}/bin/uv run python weather.py $WEATHER_LOCATION $CHECK_TIME
       '';
       serviceConfig = {
         Type = "oneshot";
