@@ -36,7 +36,10 @@
           }
           sops-nix.nixosModules.sops
         ];
-        specialArgs = { inherit inputs; };
+        specialArgs = {
+          inherit inputs;
+          dockerDir = "/srv/docker";
+        };
       };
     };
 }

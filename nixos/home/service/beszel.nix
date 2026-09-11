@@ -17,4 +17,10 @@
       enable = true;
     };
   };
+
+  services.nginx.virtualHosts."beszel.home" = {
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.beszel.hub.port}";
+    };
+  };
 }

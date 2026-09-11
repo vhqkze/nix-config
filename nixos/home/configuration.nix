@@ -13,7 +13,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./docker.nix
     ./nginx.nix
     ./task.nix
     ./service
@@ -104,6 +103,9 @@
   programs.zsh.enable = true;
   programs.hyprland.enable = true;
 
+  virtualisation.docker.enable = true;
+  virtualisation.oci-containers.backend = "docker";
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.vhqkze = {
     isNormalUser = true;
@@ -127,6 +129,7 @@
   ];
 
   systemd.tmpfiles.rules = [
+    "d /srv/docker 0755 root root -"
     "d /var/lib/mkcert 0755 root root -"
   ];
 

@@ -20,4 +20,16 @@
       MEMOS_INSTANCE_URL = "https://memos.home";
     };
   };
+
+  services.nginx.virtualHosts."memos.home" = {
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${config.services.memos.settings.MEMOS_PORT}";
+    };
+  };
+
+  services.restic.backups.memos = {
+    paths = [ config.services.memos.dataDir ];
+    backupPrepareCommand = "systemctl stop memos.service";
+    backupCleanupCommand = "systemctl start memos.service";
+  };
 }

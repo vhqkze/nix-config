@@ -1,27 +1,31 @@
 {
-  config,
-  pkgs,
-  inputs,
   ...
 }:
 {
   imports = [
     ./avahi.nix
     ./beszel.nix
+    ./ezbookkeeping.nix
     ./fail2ban.nix
     ./filebrowser.nix
     ./forgejo.nix
     ./garage.nix
     ./gatus.nix
+    ./grimmory.nix
+    ./homepage.nix
+    ./kavita.nix
     ./linkding.nix
     ./mariadb.nix
     ./memos.nix
     ./outline.nix
     ./paperless.nix
+    ./plex.nix
     ./pocket-id.nix
     ./postgresql.nix
     ./readeck.nix
+    ./reader.nix
     ./restic.nix
+    ./tugtainer.nix
     ./webdav.nix
   ];
 }

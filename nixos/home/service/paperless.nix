@@ -50,9 +50,7 @@
     onSuccess = [ "restic-backups-paperless.service" ];
   };
 
-  services.nginx.virtualHosts."${config.services.paperless.domain}" = {
-    forceSSL = true;
-    sslCertificate = config.sops.secrets."nginx/home.pem".path;
-    sslCertificateKey = config.sops.secrets."nginx/home-key.pem".path;
+  services.restic.backups.paperless = {
+    paths = [ config.services.paperless.exporter.directory ];
   };
 }

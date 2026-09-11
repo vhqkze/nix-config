@@ -60,6 +60,18 @@
       };
     };
   };
+
+  services.nginx.virtualHosts."git.home" = {
+    locations."/" = {
+      proxyPass = "http://unix:${config.services.forgejo.settings.server.HTTP_ADDR}";
+    };
+  };
+
+  services.restic.backups.forgejo = {
+    paths = [ config.services.forgejo.stateDir ];
+    backupPrepareCommand = "systemctl stop forgejo.service";
+    backupCleanupCommand = "systemctl start forgejo.service";
+  };
 }
 
 # 首次部署，下面四个字段的值应该设置如下：

@@ -1,134 +1,60 @@
 {
   config,
-  pkgs,
+  lib,
   ...
 }:
 let
-  makeBackup =
-    {
-      paths,
-      calendar ? null,
-      tag,
-      exclude ? [ ],
-      backupPrepareCommand ? null,
-      backupCleanupCommand ? null,
-    }:
-    {
-      inherit
-        paths
-        exclude
-        backupPrepareCommand
-        backupCleanupCommand
-        ;
-      repositoryFile = config.sops.secrets."service/restic/repo".path;
-      passwordFile = config.sops.secrets."service/restic/password".path;
-      initialize = true;
-      extraBackupArgs = [
-        "--tag auto"
-        "--tag"
-        tag
-        "--retry-lock 30m"
-      ];
-      timerConfig =
-        if calendar == null then
-          null
-        else
-          {
-            OnCalendar = calendar;
-            Persistent = true;
-          };
-      pruneOpts = [
-        "--tag auto"
-        "--tag"
-        tag
-        "--keep-daily 30"
-        "--keep-weekly 20"
-        "--keep-monthly 12"
-        "--retry-lock 30m"
-      ];
-    };
+  rootConfig = config;
 in
 {
-  services.restic.backups = {
-    docker-homepage = makeBackup {
-      paths = [ "/srv/docker/homepage" ];
-      calendar = "05:00";
-      tag = "homepage";
-    };
-    linkding = makeBackup {
-      paths = [ "/var/lib/linkding" ];
-      backupPrepareCommand = "systemctl stop linkding.service";
-      backupCleanupCommand = "systemctl start linkding.service";
-      calendar = "05:05";
-      tag = "linkding";
-    };
-    memos = makeBackup {
-      paths = [ "/var/lib/memos" ];
-      backupPrepareCommand = "systemctl stop memos.service";
-      backupCleanupCommand = "systemctl start memos.service";
-      calendar = "05:10";
-      tag = "memos";
-    };
-    docker-plex = makeBackup {
-      paths = [ "/srv/docker/plex" ];
-      calendar = "05:15";
-      tag = "plex";
-    };
-    docker-ezbookkeeping = makeBackup {
-      paths = [ "/srv/docker/ezbookkeeping" ];
-      calendar = "05:20";
-      tag = "ezbookkeeping";
-    };
-    forgejo = makeBackup {
-      paths = [ "/var/lib/forgejo" ];
-      backupPrepareCommand = "systemctl stop forgejo.service";
-      backupCleanupCommand = "systemctl start forgejo.service";
-      calendar = "05:45";
-      tag = "forgejo";
-    };
-    readeck = makeBackup {
-      paths = [ "/var/lib/private/readeck" ];
-      backupPrepareCommand = "systemctl stop readeck.service";
-      backupCleanupCommand = "systemctl start readeck.service";
-      calendar = "05:25";
-      tag = "readeck";
-    };
-    grimmory = makeBackup {
-      paths = [
-        "/srv/docker/grimmory"
-        "/tmp/mariadb/grimmory.sql"
-      ];
-      backupPrepareCommand = ''
-        install -d -m 750 -o root -g root /tmp/mariadb
-        ${pkgs.mariadb}/bin/mariadb-dump --single-transaction --quick --routines --triggers --events -f grimmory > /tmp/mariadb/grimmory.sql
-      '';
-      backupCleanupCommand = "rm -rf /tmp/mariadb";
-      calendar = "05:30";
-      tag = "grimmory";
-    };
-    outline = makeBackup {
-      paths = [
-        "/var/lib/outline"
-        "/tmp/postgres/outline_db.sql"
-      ];
-      backupPrepareCommand = ''
-        install -d -m 750 -o postgres -g postgres /tmp/postgres
-        ${config.security.wrapperDir}/sudo -u postgres ${pkgs.postgresql}/bin/pg_dump -F p --clean --if-exists -f /tmp/postgres/outline_db.sql outline
-      '';
-      backupCleanupCommand = "rm -rf /tmp/postgres";
-      calendar = "05:40";
-      tag = "outline";
-    };
-    paperless = makeBackup {
-      paths = [ config.services.paperless.exporter.directory ];
-      tag = "paperless";
-    };
-    pocket-id = makeBackup {
-      paths = [ config.services.pocket-id.dataDir ];
-      backupPrepareCommand = "systemctl stop pocket-id.service";
-      backupCleanupCommand = "systemctl start pocket-id.service";
-      calendar = "05:35";
-      tag = "pocket-id";
-    };
-  };
+  imports = [
+    {
+      options.services.restic.backups = lib.mkOption {
+        type = lib.types.attrsOf (
+          lib.types.submodule (
+            { name, config, ... }:
+            {
+              options.tag = lib.mkOption {
+                type = lib.types.str;
+                default = name;
+                description = "Restic backup tag. Defaults to the backup attribute name.";
+              };
+
+              config = {
+                repositoryFile = lib.mkDefault rootConfig.sops.secrets."service/restic/repo".path;
+                passwordFile = lib.mkDefault rootConfig.sops.secrets."service/restic/password".path;
+                initialize = lib.mkDefault true;
+
+                extraBackupArgs = lib.mkDefault [
+                  "--tag auto"
+                  "--tag"
+                  config.tag
+                  "--retry-lock 60m"
+                  "--quiet"
+                ];
+
+                pruneOpts = lib.mkDefault [
+                  "--tag auto"
+                  "--tag"
+                  config.tag
+                  "--keep-last 5"
+                  "--keep-daily 30"
+                  "--keep-weekly 20"
+                  "--keep-monthly 12"
+                  "--retry-lock 60m"
+                  "--quiet"
+                ];
+
+                timerConfig = lib.mkDefault {
+                  OnCalendar = "04:00";
+                  Persistent = true;
+                  RandomizedDelaySec = "1h";
+                };
+              };
+            }
+          )
+        );
+      };
+    }
+  ];
 }

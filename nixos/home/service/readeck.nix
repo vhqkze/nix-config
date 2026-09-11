@@ -22,4 +22,16 @@
       };
     };
   };
+
+  services.nginx.virtualHosts."readeck.home" = {
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.readeck.settings.server.port}";
+    };
+  };
+
+  services.restic.backups.readeck = {
+    paths = [ "/var/lib/private/readeck" ];
+    backupPrepareCommand = "systemctl stop readeck.service";
+    backupCleanupCommand = "systemctl start readeck.service";
+  };
 }

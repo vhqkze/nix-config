@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   ...
 }:
 {
@@ -24,5 +25,24 @@
       tokenUrl = "https://pocket-id.home/api/oidc/token";
       userinfoUrl = "https://pocket-id.home/api/oidc/userinfo";
     };
+  };
+
+  services.nginx.virtualHosts."outline.home" = {
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.outline.port}";
+      proxyWebsockets = true;
+    };
+  };
+
+  services.restic.backups.outline = {
+    paths = [
+      "/var/lib/outline"
+      "/tmp/postgres/outline_db.sql"
+    ];
+    backupPrepareCommand = ''
+      install -d -m 750 -o postgres -g postgres /tmp/postgres
+      ${config.security.wrapperDir}/sudo -u postgres ${pkgs.postgresql}/bin/pg_dump -F p --clean --if-exists -f /tmp/postgres/outline_db.sql outline
+    '';
+    backupCleanupCommand = "rm -rf /tmp/postgres";
   };
 }

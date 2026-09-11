@@ -1,7 +1,5 @@
 {
   config,
-  pkgs,
-  inputs,
   ...
 }:
 
@@ -92,6 +90,12 @@
           conditions = [ "[STATUS] == 200" ];
         }
       ];
+    };
+  };
+
+  services.nginx.virtualHosts."status.home" = {
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.gatus.settings.web.port}";
     };
   };
 }

@@ -52,30 +52,26 @@
   # 查看key，带上 --show-secret 可以显示 secret key
   # sudo garage key info memosu --show-secret
 
-  services.nginx.virtualHosts =
-    let
-      proxy =
-        port: extra:
-        {
-          locations."/" = {
-            proxyPass = "http://127.0.0.1:${toString port}";
-            extraConfig = ''
-              client_max_body_size 0;
-            '';
-          };
-          forceSSL = true;
-          sslCertificate = config.sops.secrets."nginx/home.pem".path;
-          sslCertificateKey = config.sops.secrets."nginx/home-key.pem".path;
-        }
-        // extra;
-    in
-    {
-      "s3.garage.home" = proxy 3900 {
-        serverAliases = [ "*.s3.garage.home" ];
+  services.nginx.virtualHosts = {
+    "s3.garage.home" = {
+      serverAliases = [ "*.s3.garage.home" ];
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:3900";
+        extraConfig = ''
+          proxy_max_temp_file_size 0;
+        '';
       };
-      "web.garage.home" = proxy 3902 {
-        serverAliases = [ "*.web.garage.home" ];
-      };
-      "admin.garage.home" = proxy 3903 { };
     };
+    "web.garage.home" = {
+      serverAliases = [ "*.web.garage.home" ];
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:3902";
+      };
+    };
+    "admin.garage.home" = {
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:3903";
+      };
+    };
+  };
 }
