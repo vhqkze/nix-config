@@ -33,27 +33,6 @@
   #   };
   # };
 
-  fonts.fontconfig.enable = true;
-  fonts.fontconfig.defaultFonts = {
-    monospace = [
-      "Iosevka"
-      "Symbols Nerd Font"
-      "Sarasa Mono SC"
-    ];
-    sansSerif = [
-      "Sarasa Mono SC"
-      "Noto Sans CJK SC"
-      "Symbols Nerd Font"
-    ];
-    serif = [
-      "Noto Serif"
-      "Symbols Nerd Font"
-    ];
-    emoji = [
-      "Noto Color Emoji"
-    ];
-  };
-
   xdg.configFile =
     let
       link = config.lib.file.mkOutOfStoreSymlink;
