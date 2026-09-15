@@ -29,4 +29,6 @@
   services.restic.backups.plex = {
     paths = [ "${dockerDir}/plex" ];
   };
+
+  networking.firewall.allowedTCPPorts = [ 32400 ];
 }

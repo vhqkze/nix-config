@@ -93,7 +93,6 @@
 
   systemd.tmpfiles.rules = [
     "d /srv/docker 0755 root root -"
-    "d /var/lib/mkcert 0755 root root -"
   ];
 
   # Allow unfree packages
@@ -188,31 +187,6 @@
       "service/readeck" = { };
       "service/restic/repo" = { };
       "service/restic/password" = { };
-      "mkcert/rootCA.pem" = {
-        format = "binary";
-        sopsFile = ./secrets/mkcert-ca.pem.asc;
-        owner = "vhqkze";
-        mode = "0644";
-        path = "/var/lib/mkcert/rootCA.pem";
-      };
-      "mkcert/rootCA-key.pem" = {
-        format = "binary";
-        sopsFile = ./secrets/mkcert-key.pem.asc;
-        owner = "vhqkze";
-        mode = "0400";
-        path = "/var/lib/mkcert/rootCA-key.pem";
-      };
-      "nginx/home.pem" = {
-        format = "binary";
-        sopsFile = ./secrets/home.pem.asc;
-        owner = "nginx";
-      };
-      "nginx/home-key.pem" = {
-        format = "binary";
-        sopsFile = ./secrets/home-key.pem.asc;
-        owner = "nginx";
-        reloadUnits = [ "nginx.service" ];
-      };
     };
   };
 
@@ -220,7 +194,6 @@
     EDITOR = "nvim";
     VISUAL = "nvim";
     ZDOTDIR = "$HOME/.config/zsh";
-    CAROOT = "/var/lib/mkcert";
   };
   nix.settings.experimental-features = [
     "nix-command"
@@ -311,11 +284,6 @@
   networking.firewall = {
     enable = true;
     trustedInterfaces = [ "docker0" ];
-    allowedTCPPorts = [
-      80
-      443
-      32400 # 要开启，要不然即使在局域网内，plex 也无法播放
-    ];
   };
 
   # This value determines the NixOS release from which the default
