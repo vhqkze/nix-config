@@ -42,7 +42,7 @@
   };
 
   security.pki.certificateFiles = [
-    ./secrets/rootCA.pem
+    "${inputs.self}/secrets/rootCA.pem"
   ];
 
   # Allow unfree packages

@@ -24,14 +24,14 @@
     {
       nixosConfigurations.home = nixpkgs.lib.nixosSystem {
         modules = [
-          ./home/configuration.nix
+          ./hosts/home
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "backup";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.vhqkze = {
-              imports = [ ./home/vhqkze.nix ];
+              imports = [ ./hosts/home/vhqkze.nix ];
             };
           }
           sops-nix.nixosModules.sops
@@ -40,6 +40,12 @@
           inherit inputs;
           dockerDir = "/srv/docker";
         };
+      };
+      nixosConfigurations.router = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./hosts/router
+        ];
+        specialArgs = { inherit inputs; };
       };
     };
 }

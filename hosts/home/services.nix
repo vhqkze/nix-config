@@ -1,0 +1,33 @@
+{
+  inputs,
+  ...
+}:
+{
+  imports = [
+    "${inputs.self}/modules/services/avahi.nix"
+    "${inputs.self}/modules/services/beszel.nix"
+    "${inputs.self}/modules/services/ezbookkeeping.nix"
+    "${inputs.self}/modules/services/fail2ban.nix"
+    "${inputs.self}/modules/services/filebrowser.nix"
+    "${inputs.self}/modules/services/forgejo.nix"
+    "${inputs.self}/modules/services/garage.nix"
+    "${inputs.self}/modules/services/gatus.nix"
+    "${inputs.self}/modules/services/grimmory.nix"
+    "${inputs.self}/modules/services/homepage.nix"
+    "${inputs.self}/modules/services/kavita.nix"
+    "${inputs.self}/modules/services/linkding.nix"
+    "${inputs.self}/modules/services/mariadb.nix"
+    "${inputs.self}/modules/services/memos.nix"
+    "${inputs.self}/modules/services/nginx.nix"
+    "${inputs.self}/modules/services/outline.nix"
+    "${inputs.self}/modules/services/paperless.nix"
+    "${inputs.self}/modules/services/plex.nix"
+    "${inputs.self}/modules/services/pocket-id.nix"
+    "${inputs.self}/modules/services/postgresql.nix"
+    "${inputs.self}/modules/services/readeck.nix"
+    "${inputs.self}/modules/services/reader.nix"
+    "${inputs.self}/modules/services/restic.nix"
+    "${inputs.self}/modules/services/tugtainer.nix"
+    "${inputs.self}/modules/services/webdav.nix"
+  ];
+}

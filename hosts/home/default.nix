@@ -5,6 +5,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -12,10 +13,9 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./basic.nix
-    ./nginx.nix
+    "${inputs.self}/modules/nixos/common.nix"
     ./task.nix
-    ./service
+    ./services.nix
     # ./xserver.nix
   ];
 
@@ -101,7 +101,7 @@
   ];
 
   sops = {
-    defaultSopsFile = ./secrets/secret.yaml;
+    defaultSopsFile = "${inputs.self}/secrets/secret.yaml";
     age.keyFile = "${config.users.users.vhqkze.home}/.config/sops/age/keys.txt";
     gnupg.sshKeyPaths = [ ];
     age.sshKeyPaths = [ ];
