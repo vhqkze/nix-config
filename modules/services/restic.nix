@@ -1,12 +1,22 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 let
   rootConfig = config;
 in
 {
+  sops.secrets = {
+    "restic/repo" = {
+      sopsFile = "${inputs.self}/secrets/common/secret.yaml";
+    };
+    "restic/password" = {
+      sopsFile = "${inputs.self}/secrets/common/secret.yaml";
+    };
+  };
+
   imports = [
     {
       options.services.restic.backups = lib.mkOption {
@@ -21,8 +31,8 @@ in
               };
 
               config = {
-                repositoryFile = lib.mkDefault rootConfig.sops.secrets."service/restic/repo".path;
-                passwordFile = lib.mkDefault rootConfig.sops.secrets."service/restic/password".path;
+                repositoryFile = lib.mkDefault rootConfig.sops.secrets."restic/repo".path;
+                passwordFile = lib.mkDefault rootConfig.sops.secrets."restic/password".path;
                 initialize = lib.mkDefault true;
 
                 extraBackupArgs = lib.mkDefault [

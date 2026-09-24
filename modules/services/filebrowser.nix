@@ -67,6 +67,7 @@ let
   # '';
 in
 {
+  sops.secrets.filebrowser = { };
 
   systemd.services.filebrowser = {
     description = "FileBrowser Quantum Service";
@@ -76,7 +77,7 @@ in
       WorkingDirectory = "/var/lib/filebrowser-quantum";
       StateDirectory = "filebrowser-quantum";
       CacheDirectory = "filebrowser-quantum";
-      EnvironmentFile = config.sops.secrets."service/filebrowser".path;
+      EnvironmentFile = config.sops.secrets.filebrowser.path;
 
       Type = "simple";
       User = "vhqkze";

@@ -1,4 +1,6 @@
 {
+  config,
+  lib,
   pkgs,
   inputs,
   ...
@@ -42,7 +44,7 @@
   };
 
   security.pki.certificateFiles = [
-    "${inputs.self}/secrets/rootCA.pem"
+    "${inputs.self}/secrets/common/rootCA.pem"
   ];
 
   # Allow unfree packages
@@ -156,6 +158,13 @@
         HostName mini.local
         User vhqkze
     '';
+  };
+
+  sops = {
+    defaultSopsFile = "${inputs.self}/secrets/${config.networking.hostName}/secret.yaml";
+    age.keyFile = lib.mkDefault "/var/lib/sops-nix/keys.txt";
+    gnupg.sshKeyPaths = [ ];
+    age.sshKeyPaths = [ ];
   };
 
   networking.firewall.enable = true;

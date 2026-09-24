@@ -3,9 +3,11 @@
   ...
 }:
 {
+  sops.secrets.pocket-id = { };
+
   services.pocket-id = {
     enable = true;
-    environmentFile = config.sops.secrets."service/pocket-id".path;
+    environmentFile = config.sops.secrets.pocket-id.path;
     settings = {
       APP_URL = "https://pocket-id.home";
       TRUST_PROXY = true;

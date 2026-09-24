@@ -4,6 +4,12 @@
   ...
 }:
 {
+  sops.secrets = {
+    "service/bark_me" = { };
+    "service/bark_xz" = { };
+    "service/weather" = { };
+  };
+
   systemd.services = {
     "service_fail_notify@" = {
       description = "服务失败通知";

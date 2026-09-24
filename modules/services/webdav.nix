@@ -3,9 +3,11 @@
   ...
 }:
 {
+  sops.secrets.webdav = { };
+
   services.webdav = {
     enable = true;
-    environmentFile = config.sops.secrets."webdav".path;
+    environmentFile = config.sops.secrets.webdav.path;
     settings = {
       address = "0.0.0.0";
       port = 9080;

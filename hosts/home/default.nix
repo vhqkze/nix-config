@@ -80,6 +80,8 @@
     ];
   };
 
+  sops.age.keyFile = "${config.users.users.vhqkze.home}/.config/sops/age/keys.txt";
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -99,38 +101,6 @@
     android-tools
     asciidoctor-with-extensions
   ];
-
-  sops = {
-    defaultSopsFile = "${inputs.self}/secrets/secret.yaml";
-    age.keyFile = "${config.users.users.vhqkze.home}/.config/sops/age/keys.txt";
-    gnupg.sshKeyPaths = [ ];
-    age.sshKeyPaths = [ ];
-    secrets = {
-      "webdav" = { };
-      "nginx/reader".owner = "nginx";
-      "docker/grimmory" = { };
-      "docker/plex" = { };
-      "docker/ezbookkeeping" = { };
-      "docker/tugtainer" = { };
-      "garage" = { };
-      "outline/secretKey".owner = "outline";
-      "outline/utilsSecret".owner = "outline";
-      "outline/oidcSecret".owner = "outline";
-      "paperless/password".owner = "paperless";
-      "paperless/env".owner = "paperless";
-      "service/bark_me" = { };
-      "service/bark_xz" = { };
-      "service/weather" = { };
-      "service/beszel_hub" = { };
-      "service/beszel_agent" = { };
-      "service/linkding" = { };
-      "service/filebrowser" = { };
-      "service/pocket-id" = { };
-      "service/readeck" = { };
-      "service/restic/repo" = { };
-      "service/restic/password" = { };
-    };
-  };
 
   fileSystems = {
     disk = {

@@ -4,6 +4,8 @@
   ...
 }:
 {
+  sops.secrets."nginx/reader".owner = "nginx";
+
   virtualisation.oci-containers.containers.reader = {
     image = "hectorqin/reader";
     ports = [ "8080:8080" ];

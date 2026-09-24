@@ -4,6 +4,8 @@
   ...
 }:
 {
+  sops.secrets.ezbookkeeping = { };
+
   virtualisation.oci-containers.containers.ezbookkeeping = {
     image = "mayswind/ezbookkeeping:latest";
     ports = [ "7080:8080" ];
@@ -13,7 +15,7 @@
       EBK_SERVER_DOMAIN = "money.home";
       EBK_SERVER_ROOT_URL = "https://money.home/";
     };
-    environmentFiles = [ config.sops.secrets."docker/ezbookkeeping".path ];
+    environmentFiles = [ config.sops.secrets.ezbookkeeping.path ];
     volumes = [
       "${dockerDir}/ezbookkeeping/data:/ezbookkeeping/data"
       "${dockerDir}/ezbookkeeping/storage:/ezbookkeeping/storage"

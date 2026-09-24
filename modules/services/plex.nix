@@ -4,12 +4,14 @@
   ...
 }:
 {
+  sops.secrets.plex = { };
+
   virtualisation.oci-containers.containers.plex = {
     image = "plexinc/pms-docker";
     environment = {
       TZ = config.time.timeZone;
     };
-    environmentFiles = [ config.sops.secrets."docker/plex".path ];
+    environmentFiles = [ config.sops.secrets.plex.path ];
     volumes = [
       "${dockerDir}/plex/config:/config"
       "${dockerDir}/plex/transcode:/transcode"

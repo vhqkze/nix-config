@@ -4,6 +4,8 @@
   ...
 }:
 {
+  sops.secrets.garage = { };
+
   services.garage = {
     enable = true;
     package = pkgs.garage_2;

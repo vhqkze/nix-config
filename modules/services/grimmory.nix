@@ -5,6 +5,8 @@
   ...
 }:
 {
+  sops.secrets.grimmory = { };
+
   virtualisation.oci-containers.containers.grimmory =
     let
       uid = "1000";
@@ -22,7 +24,7 @@
         DATABASE_USERNAME = "grimmory";
         API_DOCS_ENABLED = "false";
       };
-      environmentFiles = [ config.sops.secrets."docker/grimmory".path ];
+      environmentFiles = [ config.sops.secrets.grimmory.path ];
       volumes = [
         "${dockerDir}/grimmory/data:/app/data"
         "${dockerDir}/grimmory/library:/library"

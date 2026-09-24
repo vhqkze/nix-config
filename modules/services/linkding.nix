@@ -4,11 +4,13 @@
   ...
 }:
 {
+  sops.secrets.linkding = { };
+
   services.linkding = {
     enable = true;
     package = pkgs.linkding;
     port = 9090;
-    environmentFile = config.sops.secrets."service/linkding".path;
+    environmentFile = config.sops.secrets.linkding.path;
     settings = {
       LD_DISABLE_BACKGROUND_TASKS = "True";
       LD_DISABLE_URL_VALIDATION = "True";

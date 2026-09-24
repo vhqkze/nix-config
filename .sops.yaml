@@ -1,7 +1,18 @@
 keys:
-  - &admin_vhqkze age1jqgeptl5zllum4v72edcw3e8uaahqvt9a5dkq86sryyhajpatdmqaa92x7
+  - &admin age1gtvg8pm63x4g5p5lswxcn5ewlp6dlvzuav84xlfn3qv5dgumag2qv2vuy0
+  - &key_home age1jqgeptl5zllum4v72edcw3e8uaahqvt9a5dkq86sryyhajpatdmqaa92x7
 creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|json|env|ini|pem)$
+  - path_regex: secrets/common/
     key_groups:
-    - age:
-      - *admin_vhqkze
+      - age:
+          - *admin
+          - *key_home
+  - path_regex: secrets/home/
+    key_groups:
+      - age:
+          - *admin
+          - *key_home
+  - path_regex: secrets/router/
+    key_groups:
+      - age:
+          - *admin

@@ -4,10 +4,12 @@
   ...
 }:
 {
+  sops.secrets.tugtainer = { };
+
   virtualisation.oci-containers.containers.tugtainer = {
     image = "quenary/tugtainer:latest";
     ports = [ "9412:80" ];
-    environmentFiles = [ config.sops.secrets."docker/tugtainer".path ];
+    environmentFiles = [ config.sops.secrets.tugtainer.path ];
     volumes = [
       "${dockerDir}/tugtainer:/tugtainer"
       "/var/run/docker.sock:/var/run/docker.sock:ro"

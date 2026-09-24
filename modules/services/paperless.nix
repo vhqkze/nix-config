@@ -8,6 +8,11 @@
   disabledModules = [ "services/misc/paperless.nix" ];
   imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/paperless.nix" ];
 
+  sops.secrets = {
+    "paperless/password".owner = "paperless";
+    "paperless/env".owner = "paperless";
+  };
+
   services.paperless = {
     enable = true;
     package = pkgs.unstable.paperless-ngx;

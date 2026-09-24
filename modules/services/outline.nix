@@ -4,6 +4,12 @@
   ...
 }:
 {
+  sops.secrets = {
+    "outline/secretKey".owner = "outline";
+    "outline/utilsSecret".owner = "outline";
+    "outline/oidcSecret".owner = "outline";
+  };
+
   services.outline = {
     enable = true;
     port = 9050;
