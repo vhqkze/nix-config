@@ -60,6 +60,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    _7zz
     age
     atuin
     bat
@@ -70,6 +71,7 @@
     file
     gcc
     git
+    gzip
     htop
     jq
     killall
@@ -79,7 +81,6 @@
     moreutils
     oh-my-zsh
     openssl
-    p7zip
     ripgrep
     sops
     starship
@@ -90,6 +91,7 @@
     wget
     witr
     zoxide
+    zstd
 
     unstable.just
     unstable.lazygit
@@ -102,6 +104,8 @@
     EDITOR = "nvim";
     VISUAL = "nvim";
     ZDOTDIR = "$HOME/.config/zsh";
+    ZSH = "${pkgs.oh-my-zsh}/share/oh-my-zsh";
+    ZSH_CUSTOM = "$HOME/.local/share/oh-my-zsh/custom";
   };
 
   services.openssh = {

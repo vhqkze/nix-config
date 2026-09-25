@@ -5,7 +5,8 @@
 {
   imports = [
     "${inputs.self}/modules/services/avahi.nix"
-    "${inputs.self}/modules/services/beszel.nix"
+    "${inputs.self}/modules/services/beszel-agent.nix"
+    "${inputs.self}/modules/services/beszel-hub.nix"
     "${inputs.self}/modules/services/ezbookkeeping.nix"
     "${inputs.self}/modules/services/fail2ban.nix"
     "${inputs.self}/modules/services/filebrowser.nix"

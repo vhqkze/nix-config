@@ -1,12 +1,14 @@
 keys:
   - &admin age1gtvg8pm63x4g5p5lswxcn5ewlp6dlvzuav84xlfn3qv5dgumag2qv2vuy0
   - &key_home age1jqgeptl5zllum4v72edcw3e8uaahqvt9a5dkq86sryyhajpatdmqaa92x7
+  - &key_router age1lejnfgtn0h0jutv7l8mn8kqng7y9wa9wyfp5ed8zhq99h75m5ffsekja9p
 creation_rules:
   - path_regex: secrets/common/
     key_groups:
       - age:
           - *admin
           - *key_home
+          - *key_router
   - path_regex: secrets/home/
     key_groups:
       - age:
@@ -16,3 +18,4 @@ creation_rules:
     key_groups:
       - age:
           - *admin
+          - *key_router

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -32,20 +33,6 @@
   networking.useDHCP = false; # 全局禁用 useDHCP，因为我们将在 networkd 中手动配置
   networking.useNetworkd = true;
   services.resolved.enable = false;
-
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = false;
-    publish = {
-      enable = true;
-      addresses = true;
-      workstation = false;
-      userServices = false;
-    };
-    # 确保只在 LAN 口上开启
-    allowInterfaces = [ "enu1" ];
-  };
 
   # 配置两个网口
   systemd.network = {
@@ -118,11 +105,18 @@
     checkReversePath = false;
   };
 
+  sops.secrets."mihomo.yaml" = {
+    format = "binary";
+    sopsFile = "${inputs.self}/secrets/router/mihomo.yaml.enc";
+    mode = "0600";
+    reloadUnits = [ "mihomo.service" ];
+  };
+
   # 配置 Mihomo
   services.mihomo = {
     enable = true;
     tunMode = true;
-    configFile = "/var/lib/mihomo/config.yaml";
+    configFile = config.sops.secrets."mihomo.yaml".path;
     webui = pkgs.unstable.metacubexd;
   };
 

@@ -44,6 +44,7 @@
       nixosConfigurations.router = nixpkgs.lib.nixosSystem {
         modules = [
           ./hosts/router
+          sops-nix.nixosModules.sops
         ];
         specialArgs = { inherit inputs; };
       };

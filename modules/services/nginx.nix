@@ -54,12 +54,12 @@ in
 
   sops.secrets."mkcert/rootCA.pem" = {
     format = "binary";
-    sopsFile = "${inputs.self}/secrets/common/mkcert-ca.pem.asc";
+    sopsFile = "${inputs.self}/secrets/common/mkcert-ca.pem.enc";
     mode = "0400";
   };
   sops.secrets."mkcert/rootCA-key.pem" = {
     format = "binary";
-    sopsFile = "${inputs.self}/secrets/common/mkcert-key.pem.asc";
+    sopsFile = "${inputs.self}/secrets/common/mkcert-key.pem.enc";
     mode = "0400";
     reloadUnits = [ "generate-mkcert-nginx.service" ];
   };
