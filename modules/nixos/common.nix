@@ -14,6 +14,11 @@
     "flakes"
   ];
 
+  nix.registry = {
+    nixpkgs.flake = inputs.nixpkgs;
+    unstable.flake = inputs.nixpkgs-unstable;
+  };
+
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
 
