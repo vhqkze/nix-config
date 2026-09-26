@@ -39,7 +39,7 @@
     enable = true;
     # WAN 口 (end0) - 从光猫获取 IP
     networks."10-wan" = {
-      matchConfig.Name = "end0";
+      matchConfig.Name = "enu1u5";
       networkConfig = {
         DHCP = "ipv4";
         IPv4Forwarding = "yes";
@@ -49,7 +49,7 @@
     };
     # LAN 口 (enu1) - 静态 IP 10.1.1.1
     networks."20-lan" = {
-      matchConfig.Name = "enu1";
+      matchConfig.Name = "enu1u1";
       address = [ "10.1.1.1/24" ];
       networkConfig = {
         IPv4Forwarding = "yes";
@@ -74,8 +74,8 @@
   # 配置NAT
   networking.nat = {
     enable = true;
-    externalInterface = "end0"; # 替换为您的实际WAN口名称
-    internalInterfaces = [ "enu1" ]; # 替换为您的实际LAN口名称
+    externalInterface = "enu1u5"; # 替换为您的实际WAN口名称
+    internalInterfaces = [ "enu1u1" ]; # 替换为您的实际LAN口名称
   };
 
   # 配置防火墙
@@ -83,7 +83,7 @@
     enable = true;
     allowedTCPPorts = lib.mkForce [ ];
     allowedUDPPorts = lib.mkForce [ ];
-    interfaces."enu1" = {
+    interfaces."enu1u1" = {
       allowedTCPPorts = [
         22 # ssh
         53 # dns

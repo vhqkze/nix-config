@@ -23,12 +23,35 @@
   # Enables the generation of /boot/extlinux/extlinux.conf
   boot.loader.generic-extlinux-compatible.enable = true;
 
+  zramSwap = {
+    enable = true;
+    algorithm = "lz4";
+    memoryPercent = 100;
+    priority = 100;
+  };
+
   swapDevices = [
     {
       device = "/swapfile";
-      size = 1 * 1024;
+      size = 2 * 1024;
+      priority = 3;
     }
   ];
+
+  boot.kernel.sysctl = {
+    # 调高 swappiness，让内核更积极地把冷页面压进 ZRAM
+    "vm.swappiness" = 150;
+    # 降低页面水印比例，对小内存机器更友好
+    "vm.watermark_boost_factor" = 0;
+    "vm.watermark_scale_factor" = 125;
+    "vm.page-cluster" = 0; # ZRAM 推荐单页交换，减少延迟
+  };
+
+  # 防假死：建议配置 earlyoom 或开启 systemd-oomd
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5; # 内存剩余低于 5% 时快速杀掉进程，防止整机失去响应
+  };
 
   networking.hostName = "router"; # Define your hostname.
   # Pick only one of the below networking options.
@@ -81,5 +104,5 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "26.05"; # Did you read the comment?
 }
