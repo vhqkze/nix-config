@@ -87,10 +87,8 @@
       allowedTCPPorts = [
         22 # ssh
         53 # dns
-        80
-        3000 # adguardhome
+        443
         7890
-        9090
         45876 # beszel agent
       ];
       allowedUDPPorts = [
@@ -138,6 +136,9 @@
       log-level = "error";
       address = [
         "/.home/10.1.1.2"
+        "/wifi.home/10.1.1.1"
+        "/clash.home/10.1.1.1"
+        "/adguard.home/10.1.1.1"
       ];
       server-https = [
         "https://1.0.0.1/dns-query"
@@ -178,4 +179,24 @@
     };
   };
 
+  services.nginx.virtualHosts = {
+    "_" = {
+      default = true;
+      globalRedirect = "home";
+    };
+    "wifi.home" = {
+      locations."/" = {
+        return = "302 http://tplogin.cn$request_uri";
+      };
+    };
+    "clash.home" = {
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:9090";
+        proxyWebsockets = true;
+      };
+    };
+    "adguard.home" = {
+      locations."/".proxyPass = "http://127.0.0.1:3000";
+    };
+  };
 }

@@ -124,24 +124,6 @@ in
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
     recommendedUwsgiSettings = true;
-    virtualHosts = {
-      "_" = {
-        default = true;
-        globalRedirect = "home";
-      };
-      "wifi.home" = {
-        locations."/".proxyPass = "http://tplogin.cn";
-      };
-      "clash.home" = {
-        locations."/" = {
-          proxyPass = "http://router.local:9090";
-          proxyWebsockets = true;
-        };
-      };
-      "adguard.home" = {
-        locations."/".proxyPass = "http://router.local:3000";
-      };
-    };
   };
 
   networking.firewall.allowedTCPPorts = [ 443 ];
