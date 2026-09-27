@@ -13,10 +13,12 @@
     "${inputs.self}/modules/services/forgejo.nix"
     "${inputs.self}/modules/services/garage.nix"
     "${inputs.self}/modules/services/gatus.nix"
+    "${inputs.self}/modules/services/grafana.nix"
     "${inputs.self}/modules/services/grimmory.nix"
     "${inputs.self}/modules/services/homepage.nix"
     "${inputs.self}/modules/services/kavita.nix"
     "${inputs.self}/modules/services/linkding.nix"
+    "${inputs.self}/modules/services/loki.nix"
     "${inputs.self}/modules/services/mariadb.nix"
     "${inputs.self}/modules/services/memos.nix"
     "${inputs.self}/modules/services/nginx.nix"
@@ -29,6 +31,7 @@
     "${inputs.self}/modules/services/reader.nix"
     "${inputs.self}/modules/services/restic.nix"
     "${inputs.self}/modules/services/tugtainer.nix"
+    "${inputs.self}/modules/services/vector.nix"
     "${inputs.self}/modules/services/webdav.nix"
   ];
 }

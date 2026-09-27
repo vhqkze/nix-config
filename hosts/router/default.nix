@@ -17,6 +17,7 @@
     "${inputs.self}/modules/services/avahi.nix"
     "${inputs.self}/modules/services/beszel-agent.nix"
     "${inputs.self}/modules/services/nginx.nix"
+    "${inputs.self}/modules/services/vector.nix"
   ];
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
