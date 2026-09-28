@@ -130,7 +130,7 @@
           "10.1.1.1"
           "router.local"
         ];
-        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFaEsCdmNBzd0W3itpheBqm9Zf8GXVXPiKjx/OvfmwB2";
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDAM6vaBRAJQU2RT6a3GffTG7lIRe5bnnkbts5DnP5Lp";
       };
       home = {
         extraHostNames = [
