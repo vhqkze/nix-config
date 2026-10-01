@@ -20,7 +20,7 @@
           type = "remap";
           inputs = [ "journald_logs" ];
           source = ''
-            ._SYSTEMD_UNIT = ._SYSTEMD_UNIT || "unknown_service"
+            .service_name = string(.UNIT) ?? string(._SYSTEMD_UNIT) ?? string(._SYSTEMD_USER_UNIT) ?? string(.SYSLOG_IDENTIFIER) ?? "unknown_service"
           '';
         };
       };
@@ -37,7 +37,7 @@
           labels = {
             source = "journald";
             host = config.networking.hostName;
-            service_name = "{{ _SYSTEMD_UNIT }}";
+            service_name = "{{ .service_name }}";
           };
         };
       };
