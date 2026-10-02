@@ -3,6 +3,7 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 {
+  lib,
   pkgs,
   inputs,
   ...
@@ -24,6 +25,24 @@
   boot.loader.grub.enable = false;
   # Enables the generation of /boot/extlinux/extlinux.conf
   boot.loader.generic-extlinux-compatible.enable = true;
+
+  boot.zfs.forceImportRoot = false;
+
+  powerManagement.cpuFreqGovernor = "performance";
+
+  # 关掉不必要的东西，减少 img 体积和构建时间
+  documentation.enable = lib.mkForce false;
+  documentation.nixos.enable = lib.mkForce false;
+  documentation.man.enable = lib.mkForce false;
+  documentation.info.enable = lib.mkForce false;
+  fonts.fontconfig.enable = lib.mkForce false;
+  hardware.enableRedistributableFirmware = lib.mkForce false;
+
+  # 移除不必要的文件系统支持
+  boot.supportedFilesystems = lib.mkForce {
+    vfat = true; # 必须保留：用于引导分区（EFI/boot 目录）
+    ext4 = true; # 必须保留：用于根分区
+  };
 
   zramSwap = {
     enable = true;
