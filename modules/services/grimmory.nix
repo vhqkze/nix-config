@@ -14,7 +14,7 @@
       gid = toString config.users.groups.${config.users.users.vhqkze.group}.gid;
     in
     {
-      image = "ghcr.io/grimmory-tools/grimmory:latest";
+      image = "ghcr.io/grimmory-tools/grimmory:v3.5.0";
       ports = [ "6060:6060" ];
       environment = {
         USER_ID = uid;

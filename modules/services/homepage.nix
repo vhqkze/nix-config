@@ -11,7 +11,7 @@
       gid = toString config.users.groups.${config.users.users.vhqkze.group}.gid;
     in
     {
-      image = "ghcr.io/gethomepage/homepage:latest";
+      image = "ghcr.io/gethomepage/homepage:v2.4.0";
       ports = [ "3300:3000" ];
       environment = {
         HOMEPAGE_ALLOWED_HOSTS = "*";

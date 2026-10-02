@@ -7,7 +7,7 @@
   sops.secrets.ezbookkeeping = { };
 
   virtualisation.oci-containers.containers.ezbookkeeping = {
-    image = "mayswind/ezbookkeeping:latest";
+    image = "mayswind/ezbookkeeping:2.0.1";
     ports = [ "7080:8080" ];
     environment = {
       EBK_USER_ENABLE_REGISTER = "true";

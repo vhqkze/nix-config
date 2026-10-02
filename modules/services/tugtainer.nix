@@ -7,7 +7,7 @@
   sops.secrets.tugtainer = { };
 
   virtualisation.oci-containers.containers.tugtainer = {
-    image = "quenary/tugtainer:latest";
+    image = "quenary/tugtainer:v1.44.0";
     ports = [ "9412:80" ];
     environmentFiles = [ config.sops.secrets.tugtainer.path ];
     volumes = [

@@ -5,7 +5,7 @@
 }:
 {
   virtualisation.oci-containers.containers.kavita = {
-    image = "ghcr.io/kareadita/kavita:latest";
+    image = "ghcr.io/kareadita/kavita:0.9.1";
     ports = [ "5000:5000" ];
     environment = {
       TZ = config.time.timeZone;

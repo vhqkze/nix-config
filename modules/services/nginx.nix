@@ -13,7 +13,6 @@ let
 
   # 基础固定通配符和本地地址
   baseDomains = [
-    "*.home"
     "localhost"
     "127.0.0.1"
     "::1"
