@@ -48,5 +48,14 @@
         ];
         specialArgs = { inherit inputs; };
       };
+
+      nixosConfigurations.pi = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./hosts/pi
+          sops-nix.nixosModules.sops
+        ];
+        specialArgs = { inherit inputs; };
+      };
+
     };
 }

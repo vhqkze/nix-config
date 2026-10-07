@@ -2,7 +2,6 @@
   config,
   ...
 }:
-
 {
   services.gatus = {
     enable = true;
@@ -21,6 +20,13 @@
           conditions = [ "[STATUS] == 200" ];
         }
         {
+          name = "ariang";
+          url = "https://ariang.home";
+          interval = "10s";
+          client.insecure = true;
+          conditions = [ "[STATUS] == 200" ];
+        }
+        {
           name = "beszel";
           url = "https://beszel.home";
           interval = "10s";
@@ -28,15 +34,36 @@
           conditions = [ "[STATUS] == 200" ];
         }
         {
-          name = "grimmory";
-          url = "https://book.home";
+          name = "bt";
+          url = "https://bt.home";
           interval = "10s";
           client.insecure = true;
           conditions = [ "[STATUS] == 200" ];
         }
         {
-          name = "calibre";
-          url = "https://calibre.home";
+          name = "docker";
+          url = "https://docker.home";
+          interval = "10s";
+          client.insecure = true;
+          conditions = [ "[STATUS] == 200" ];
+        }
+        {
+          name = "file";
+          url = "https://file.home";
+          interval = "10s";
+          client.insecure = true;
+          conditions = [ "[STATUS] == 200" ];
+        }
+        {
+          name = "grafana";
+          url = "https://grafana.home";
+          interval = "10s";
+          client.insecure = true;
+          conditions = [ "[STATUS] == 200" ];
+        }
+        {
+          name = "grimmory";
+          url = "https://book.home";
           interval = "10s";
           client.insecure = true;
           conditions = [ "[STATUS] == 200" ];
@@ -63,18 +90,18 @@
           conditions = [ "[STATUS] == 200" ];
         }
         {
-          name = "plex";
-          url = "https://plex.home/web/index.html";
+          name = "outline";
+          url = "https://outline.home";
           interval = "10s";
           client.insecure = true;
           conditions = [ "[STATUS] == 200" ];
         }
         {
-          name = "reader";
-          url = "https://reader.home";
+          name = "plex";
+          url = "https://plex.home/web/index.html";
           interval = "10s";
           client.insecure = true;
-          conditions = [ "[STATUS] == any(200, 401)" ];
+          conditions = [ "[STATUS] == 200" ];
         }
         {
           name = "ezbookkeeping";

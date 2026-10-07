@@ -5,9 +5,7 @@
   inputs,
   ...
 }:
-
 {
-
   # 启用 IP 转发
   boot.kernel.sysctl = {
     "net.ipv4.conf.all.forwarding" = 1;
@@ -66,6 +64,10 @@
         {
           MACAddress = "84:39:be:03:00:97";
           Address = "10.1.1.2";
+        }
+        {
+          MACAddress = "B8:27:EB:C4:6D:E7";
+          Address = "10.1.1.3";
         }
       ];
     };
@@ -139,6 +141,9 @@
         "/wifi.home/10.1.1.1"
         "/clash.home/10.1.1.1"
         "/adguard.home/10.1.1.1"
+        "/ariang.home/10.1.1.3"
+        "/bt.home/10.1.1.3"
+        "/qbt.home/10.1.1.3"
       ];
       server-https = [
         "https://1.0.0.1/dns-query"
