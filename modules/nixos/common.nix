@@ -60,6 +60,21 @@
       unstable = import inputs.nixpkgs-unstable {
         system = prev.stdenv.hostPlatform.system;
         config = prev.config;
+        # 通过 overlays 参数修改 unstable 内部的 lazygit
+        overlays = [
+          (uFinal: uPrev: {
+            lazygit = uPrev.lazygit.overrideAttrs (oldAttrs: {
+              postPatch = (oldAttrs.postPatch or "") + ''
+                find . -type f -name "*.go" -exec sed -i \
+                  -e 's/▼//g' \
+                  -e 's/▶//g' \
+                  -e 's/◎//g' \
+                  -e 's/○//g' \
+                  {} +
+              '';
+            });
+          })
+        ];
       };
     })
   ];
@@ -144,7 +159,7 @@
           "10.1.1.3"
           "pi.local"
         ];
-        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFvc0GFik66/7J1BbitxYOVP62G+j1o2pb2U76JY2WLz";
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILiiiwAy8WuQRHc0J7UWhZvf7vvwkja9+pm3uumSkNVY";
       };
       "mini.local" = {
         publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIA6P2j+X/hAT3gziLDAC7bkaHuD2ITc4c/vdNoIdDCq";

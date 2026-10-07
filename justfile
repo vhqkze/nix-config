@@ -39,7 +39,7 @@ diff host=host:
 # ==============================================================================
 
 # 远程部署，用法: just deploy my-remote-server [target-ssh-user-and-ip]
-deploy target host=target:
+deploy host target:
     @echo "==> 正在向远程主机 [{{ target }}] 部署配置 [{{ host }}]..."
     nixos-rebuild switch --flake .#{{ host }} --target-host {{ target }}
 
@@ -87,4 +87,24 @@ clean age="7d":
     echo "==> 清理完成！"
 
 # 深度清理：删除全部历史世代
-clean-all: (clean "0d")
+clean-all:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "==> 准备清理所有历史版本..."
+    if [ "$(id -u)" -eq 0 ]; then
+        # 当前为 root 用户，只需要执行一次系统级清理
+        echo "--> 检测到当前为 root 用户，正在执行系统级 GC..."
+        nix-collect-garbage --delete-old
+    else
+        # 当前为普通用户，先清理普通用户配置，再 sudo 清理系统级配置
+        echo "--> 检测到当前为普通用户，正在清理用户级 Profile..."
+        nix-collect-garbage --delete-old
+        echo "--> 正在通过 sudo 清理系统级 Profile..."
+        sudo nix-collect-garbage --delete-old
+    fi
+    echo "==> 清理完成！"
+
+
+# 更新 sops 加密 key
+updatekeys:
+    fd -tf --exclude 'rootCA.pem' . secrets -x sops updatekeys -y {}

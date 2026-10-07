@@ -9,6 +9,7 @@
     enable = true;
     environment.LISTEN = "45876";
     environmentFile = config.sops.secrets.beszel-agent.path;
+    openFirewall = !config.services.beszel.hub.enable;
     smartmon = {
       enable = true;
     };
